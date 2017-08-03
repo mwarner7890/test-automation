@@ -6,7 +6,8 @@ from pyadb import ADB
 class TestRunner(unittest.TestCase):
     def setUp(self):
         self.adb = ADB()
-        self.adb.set_adb_path('/usr/bin/')
+        self.adb.start_server()
+        self.adb.set_adb_path('/usr/bin/adb')
 
         print 'DEBUG: waiting for device'
         print adb_test_functions.\
