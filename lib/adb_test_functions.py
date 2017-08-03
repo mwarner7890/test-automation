@@ -1,14 +1,15 @@
-def wait_for_phone(adb):
+def wait_for_device(adb):
     adb.wait_for_device()
-    phone = adb.get_devices()
-    return phone
+    device = adb.get_devices()
+    return device
 
 
-def unlock_screen_with_pin(adb, pin):
-    adb.input_key_event('KEYCODE_POWER')
-    adb.input_swipe(320, 1000, 320, 200)
-    adb.input_text(str(pin))
-    adb.input_key_event('KEYCODE_ENTER')
+def unlock_screen_with_pin(adb, pin=None):
+    input_key_event(adb, 'KEYCODE_POWER')
+    input_swipe(adb, 320, 1000, 320, 200)
+    if pin:
+        input_text(adb, str(pin))
+        input_key_event(adb, 'KEYCODE_ENTER')
 
 
 def launch_activity(adb, activity_name):
@@ -21,13 +22,12 @@ def input_key_event(adb, keyevent):
 
 def input_tap(adb, x, y):
     adb.shell_command('input tap {} {}'
-                           .format(str(x), str(y)))
+                      .format(str(x), str(y)))
 
 
 def input_swipe(adb, startx, starty, endx, endy):
-    adb.shell_command('input swipe {} {} {} {}'
-                           .format(str(startx), str(starty),
-                                   str(endx), str(endy)))
+    adb.shell_command('input swipe {} {} {} {}'.
+                      format(str(startx), str(starty), str(endx), str(endy)))
 
 
 def input_text(adb, text):
