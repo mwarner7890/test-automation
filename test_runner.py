@@ -7,12 +7,11 @@ class TestRunner(unittest.TestCase):
         self.adbe = AdbExtended('/usr/bin/adb')
         self.adbe.pyadb.start_server()
 
-        print 'DEBUG: waiting for device'
-        print self.adbe.wait_for_device()
-
-    def test_unlock_screen(self):
-        print 'unlocking screen...'
+        self.adbe.wait_for_device()
         self.adbe.unlock_screen_with_pin()
+
+    def tearDown(self):
+        self.adbe.input_key_event('KEYCODE_HOME')
         self.adbe.input_key_event('KEYCODE_POWER')
 
 
