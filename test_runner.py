@@ -14,6 +14,9 @@ class TestRunner(unittest.TestCase):
         self.adbe.input_key_event('KEYCODE_HOME')
         self.adbe.input_key_event('KEYCODE_POWER')
 
+    def test_file_commander_version(self):
+        self.adbe.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
+
 
 if __name__ == '__main__':
     unittest.main()
