@@ -16,6 +16,7 @@ class TestRunner(unittest.TestCase):
 
     def test_file_commander_version(self):
         self.adbe.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
+        print self.adbe.get_screen_contents()
 
 
 if __name__ == '__main__':

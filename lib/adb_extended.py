@@ -16,6 +16,7 @@ class AdbExtended:
         if pin:
             self.input_text(str(pin))
             self.input_key_event('KEYCODE_ENTER')
+        self.input_key_event('KEYCODE_HOME')
 
     def launch_activity(self, activity_name):
         self.pyadb.shell_command('am start -n {}'.format(activity_name))
@@ -35,7 +36,7 @@ class AdbExtended:
         self.pyadb.shell_command('input text {}'.format(text))
 
     def get_screen_contents(self):
-        pass
+        self.pyadb.shell_command('uiautomator dump /dev/tty')
     """
     TODO: This method should get the contents of the screen. 
     The data will be returned in an XML format.
