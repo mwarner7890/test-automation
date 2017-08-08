@@ -7,7 +7,7 @@ buildOptions = dict(packages = [], excludes = [])
 base = 'Console'
 
 executables = [
-    Executable('adb.py', base=base, targetName = 'test_automation.exe')
+    Executable('test_runner.py', base=base, targetName = 'test_automation_runner.exe')
 ]
 
 setup(name='TestAutomation',
