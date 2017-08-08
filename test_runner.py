@@ -1,22 +1,21 @@
 import unittest
-from adb_extended import AdbExtended
+import adb
 
 
 class TestRunner(unittest.TestCase):
     def setUp(self):
-        self.adbe = AdbExtended('/usr/bin/adb')
-        self.adbe.pyadb.start_server()
+        adb.start_server()
 
-        self.adbe.wait_for_device()
-        self.adbe.unlock_screen_with_pin()
+        adb.wait_for_device()
+        adb.unlock_screen_with_pin()
 
     def tearDown(self):
-        self.adbe.input_key_event('KEYCODE_HOME')
-        self.adbe.input_key_event('KEYCODE_POWER')
+        adb.input_key_event('KEYCODE_HOME')
+        adb.input_key_event('KEYCODE_POWER')
 
     def test_file_commander_version(self):
-        self.adbe.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
-        print self.adbe.get_screen_contents()
+        adb.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
+        print(adb.get_screen_contents())
 
 
 if __name__ == '__main__':
