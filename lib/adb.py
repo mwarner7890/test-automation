@@ -1,4 +1,5 @@
 from subprocess import call
+from subprocess import check_output
 
 
 def start_server():
@@ -9,26 +10,25 @@ def wait_for_device():
     call(['adb', 'wait-for-device'])
 
 
-def adb_shell_cmd(cmd):
-    call(['adb', 'shell'] + cmd)
+def run_shell_cmd(cmd):
+    call(['adb', 'shell'] + cmd.split(' '))
 
 
 def input_key_event(keyevent):
-    adb_shell_cmd(['input', 'keyevent', keyevent])
+    run_shell_cmd('input keyevent {}'.format(keyevent))
 
 
 def input_tap(x, y):
-    adb_shell_cmd(['input', 'tap', str(x), str(y)])
+    run_shell_cmd('input tap {} {}'.format(str(x), str(y)))
 
 
 def input_swipe(startx, starty, endx, endy):
-    adb_shell_cmd(['input', 'swipe', str(startx),
-                   str(starty), str(endx),
-                   str(endy)])
+    run_shell_cmd('input swipe {} {} {} {}'.format(str(startx), str(starty), str(endx),
+                                                   str(endy)))
 
 
 def input_text(text):
-    adb_shell_cmd(['input', 'text', text])
+    run_shell_cmd('input text {}'.format(text))
 
 
 def unlock_screen_with_pin(pin=None):
@@ -41,24 +41,23 @@ def unlock_screen_with_pin(pin=None):
 
 
 def launch_activity(activity_name):
-    call(['adb', 'shell', 'am', 'start', '-n'] + [activity_name])
+    run_shell_cmd('am start -n {}'.format(activity_name))
 
 
-def get_screen_contents():
-    call(['adb', 'exec-out', 'uiautomator', 'dump', '/dev/tty'])
+def clear_most_recent_app():
+    input_key_event('KEYCODE_APP_SWITCH')
+    input_swipe(150, 730, 680, 680)
 
 
-"""
-TODO: This method should get the contents of the screen. 
-The data will be returned in an XML format.
+def get_stdout_from_command(cmd):
+    return str(
+        check_output(cmd.split(' '))
+    )
 
-We need this method in general to 
-retrieve values from the screen and assert that they are correct (e.g., the correct 
-version number for File Commander).
 
-Additionally, another use for it is to allow the test program to 'know' what is 
-on the screen, and where to tap. For instance, if File Commander is run for the 
-first time, we need to know if it is asking us to accept the license agreement. 
-Otherwise, we assume it has already been accepted before and we can interact with 
-the app as normal.
-"""
+def grant_permissions():
+    input_tap(555, 820)
+
+
+def get_screen_xml():
+    return get_stdout_from_command('adb exec-out uiautomator dump /dev/tty')
