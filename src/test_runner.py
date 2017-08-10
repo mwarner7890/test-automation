@@ -23,7 +23,7 @@ class TestRunner(unittest.TestCase):
 
         self.assertIn('3.9.14746',
                       adb.get_screen_xml())
-        adb.clear_most_recent_app()
+        adb.clear_all_apps()
 
     def test_file_commander_version_directly(self):
         dump = adb.get_stdout_from_command(

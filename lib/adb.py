@@ -44,9 +44,9 @@ def launch_activity(activity_name):
     run_shell_cmd('am start -n {}'.format(activity_name))
 
 
-def clear_most_recent_app():
+def clear_all_apps():
     input_key_event('KEYCODE_APP_SWITCH')
-    input_swipe(150, 730, 680, 680)
+    input_tap(590, 120)
 
 
 def get_stdout_from_command(cmd):
