@@ -40,6 +40,11 @@ def unlock_screen_with_pin(pin=None):
     input_key_event('KEYCODE_HOME')
 
 
+def clear_sim_card_msg():
+    if 'No SIM card' in get_screen_xml():
+        input_tap(250, 250)
+
+
 def launch_activity(activity_name):
     run_shell_cmd('am start -n {}'.format(activity_name))
 

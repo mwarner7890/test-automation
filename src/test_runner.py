@@ -8,6 +8,7 @@ class TestRunner(unittest.TestCase):
 
         adb.wait_for_device()
         adb.unlock_screen_with_pin()
+        adb.clear_sim_card_msg()
 
     def tearDown(self):
         adb.input_key_event('KEYCODE_HOME')
