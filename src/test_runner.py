@@ -1,46 +1,65 @@
-import unittest
 import adb
+import test_cases
+import sys
 
 
-class TestRunner(unittest.TestCase):
-    def setUp(self):
-        adb.start_server()
+def set_up():
+    adb.start_server()
 
-        adb.wait_for_device()
-        adb.unlock_screen_with_pin()
-        adb.clear_sim_card_msg()
+    adb.wait_for_device()
+    adb.unlock_screen_with_pin()
+    adb.clear_sim_card_msg()
 
-    def tearDown(self):
-        adb.input_key_event('KEYCODE_HOME')
-        adb.input_key_event('KEYCODE_POWER')
 
-    def test_file_commander_version(self):
-        self._start_file_commander()
-        adb.input_tap(50, 100)
-        adb.input_swipe(250, 1200, 250, 30)
-        adb.input_tap(175, 800)
-        adb.input_swipe(250, 1200, 250, 30)
-        adb.input_tap(150, 1200)
+def tear_down():
+    adb.input_key_event('KEYCODE_HOME')
+    adb.input_key_event('KEYCODE_POWER')
 
-        self.assertIn('3.9.14746',
-                      adb.get_screen_xml())
-        adb.clear_all_apps()
 
-    def test_file_commander_version_directly(self):
-        dump = adb.get_stdout_from_command(
-            'adb shell dumpsys package com.mobisystems.fileman')
-        self.assertIn('3.9.14746', dump)
+def run_tests():
+    num_of_tests = len(test_names)
+    test_count = 1
+    passed_count = 0
+    failed_count = 0
+    for test_name in test_names:
+        print('Running test ({}/{}): {}'.format(test_count,
+                                                num_of_tests,
+                                                test_name))
+        try:
+            test_method = getattr(test_cases, test_name)
+        except AttributeError:
+            print('Error: No test case named {}'.format(test_name))
+            tear_down()
+            num_of_tests -= 1
+            continue
+        set_up()
+        test_passed = test_method()
+        if test_passed:
+            passed_count += 1
+        else:
+            failed_count += 1
 
-    @staticmethod
-    def _start_file_commander():
-        adb.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
-        if 'Welcome to' in adb.get_screen_xml():
-            adb.input_tap(260, 1220)
-            adb.input_tap(260, 1220)
-            adb.grant_permissions()
-        if 'Sign up' in adb.get_screen_xml():
-            adb.input_tap(670, 100)
+        print(eval_test_result(test_passed))
+        tear_down()
+        test_count += 1
 
+    print('Finished running {} tests(s):'.format(num_of_tests))
+    print('{} passed'.format(passed_count))
+    print('{} failed'.format(failed_count))
+
+
+def eval_test_result(result):
+    if result:
+        return 'Test passed'
+    return 'Test failed'
 
 if __name__ == '__main__':
-    unittest.main()
+    test_names = sys.argv[1:]
+    if len(test_names) == 0:
+        print('Usage: python test_runner.py <test1> <test2> ...')
+        print('To run all tests: python test_runner.py all')
+        exit(1)
+
+    if test_names == ['all']:
+        test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
+    run_tests()
