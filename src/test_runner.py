@@ -54,9 +54,16 @@ def eval_test_result(result):
     return 'Test failed'
 
 if __name__ == '__main__':
-    test_names = sys.argv[1:]
+    if sys.argv[2] == '-device2':
+        second_device = sys.argv[3]
+        test_names = sys.argv[4:]
+    else:
+        test_names = sys.argv[2:]
+
     if len(test_names) == 0:
-        print('Usage: python test_runner.py <test1> <test2> ...')
+        print('Usage: python test_runner.py '
+              '<device> -device2 <device2> <test1> <test2> ...')
+        print('device2 is an optional argument used for throughput testing')
         print('To run all tests: python test_runner.py all')
         exit(1)
 
