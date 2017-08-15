@@ -75,7 +75,6 @@ def _parse_cmd_line_args(args):
                     test_names = args[2:]
                     devices = [args[1]]
 
-
     return devices, test_names, message
 
 if __name__ == '__main__':
