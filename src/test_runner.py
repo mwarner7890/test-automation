@@ -53,20 +53,30 @@ def eval_test_result(result):
         return 'Test passed'
     return 'Test failed'
 
-if __name__ == '__main__':
-    if sys.argv[2] == '-device2':
-        second_device = sys.argv[3]
-        test_names = sys.argv[4:]
+
+def _parse_cmd_line_args(args):
+    devices = []
+    test_names = []
+    message = ''
+    if len(args) == 1:
+        message = 'Usage: python test_runner.py ' \
+                   '<device> -device2 <device2> <test1> <test2> ...'
     else:
-        test_names = sys.argv[2:]
+        if args[1] == '-device2':
+            message = 'Please specify primary device'
+        else:
+            if args[2] == '-device2':
+                devices = [args[1], args[3]]
+                test_names = args[4:]
+            else:
+                test_names = args[2:]
+                devices = [args[1]]
 
-    if len(test_names) == 0:
-        print('Usage: python test_runner.py '
-              '<device> -device2 <device2> <test1> <test2> ...')
-        print('device2 is an optional argument used for throughput testing')
-        print('To run all tests: python test_runner.py all')
-        exit(1)
+            if test_names == ['all']:
+                test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
+                devices = [args[1]]
+    return devices, test_names, message
 
-    if test_names == ['all']:
-        test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
-    run_tests()
+if __name__ == '__main__':
+    pass
+    # run_tests()

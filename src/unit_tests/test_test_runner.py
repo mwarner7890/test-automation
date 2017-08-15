@@ -41,11 +41,11 @@ class TestTestRunner(unittest.TestCase):
 
     def test_cmd_line_args_all(self):
         cmd_args = ['path', 'device_1', 'all']
-        devices, test_names = \
+        devices, test_names, message = \
             tr._parse_cmd_line_args(cmd_args)
-        self.assertEqual(devices, ['device1'])
+        self.assertEqual(devices, ['device_1'])
         self.assertEqual(test_names, ['test_file_commander_version',
-                                      'test_file_command_version_directly'])
+                                      'test_file_commander_version_directly'])
 
 if __name__ == '__main__':
     unittest.main()
