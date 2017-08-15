@@ -4,20 +4,20 @@ import test_runner as tr
 
 class TestTestRunner(unittest.TestCase):
     def test_cmd_line_args_test_only_single(self):
-        cmd_args = ['path', 'test_one']
+        cmd_args = ['path', 'test_only', 'test_one']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, [])
         self.assertEqual(test_names, ['test_one'])
         self.assertEqual(error, '')
 
     def test_cmd_line_args_test_only_multiple(self):
-        cmd_args = ['path', 'test_one', 'test_two']
+        cmd_args = ['path', 'test_only', 'test_one', 'test_two']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, [])
         self.assertEqual(test_names, ['test_one', 'test_two'])
         self.assertEqual(error, '')
 
-        cmd_args = ['path', 'test_one', 'test_two', 'test_three']
+        cmd_args = ['path', 'test_only', 'test_one', 'test_two', 'test_three']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, [])
         self.assertEqual(test_names, ['test_one', 'test_two', 'test_three'])
@@ -63,7 +63,7 @@ class TestTestRunner(unittest.TestCase):
                                 'Usage: python test_runner.py throughput_test sxx device1 device2')
 
     def test_cmd_line_args_test_only_without_tests_specified(self):
-        cmd_args = ['path', '']
+        cmd_args = ['path', 'test_only']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, [])
         self.assertEqual(test_names, [])
@@ -71,7 +71,7 @@ class TestTestRunner(unittest.TestCase):
                                 'Usage: python test_runner.py test_only test1 test2')
 
     def test_cmd_line_args_no_args_specified(self):
-        cmd_args = ['path', '']
+        cmd_args = ['path']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, [])
         self.assertEqual(test_names, [])

@@ -63,14 +63,15 @@ def _parse_cmd_line_args(args):
         'To run specific test(s): python test_runner.py test_only test1 test2\n'
         'To run standard tests (single device): python test_runner.py standard_tests\n'
         'To run throughput tests (between two devices): '
-        'python test_runner.py sxx_throughput_testing (where sxx is s41, s31 etc...)'
+        'python test_runner.py throughput_testing sxx (where sxx is s41, s31 etc...)'
     else:
         if args[1] == 'test_only':
             parsed_test_names = args[2:]
         elif args[1] == 'standard_tests':
             parsed_test_names = test_cases.standard_tests
-        elif args[1] == 'throughput_tests':
-            parsed_test_names =
+        elif args[1] == 'throughput_test':
+            throughput_test_phone_name = args[2]
+            parsed_test_names = ['{}_throughput_test_phone_name'.format(args[3:][1])]
 
     return parsed_devices, parsed_test_names, parse_error
 
