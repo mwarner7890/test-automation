@@ -55,32 +55,31 @@ def eval_test_result(result):
 
 
 def _parse_cmd_line_args(args):
-    devices = []
-    test_names = []
-    message = ''
+    parsed_devices = []
+    parsed_test_names = []
+    parse_error = ''
     if len(args) == 1:
-        message = 'Usage: python test_runner.py ' \
+        parse_error = 'Usage: python test_runner.py ' \
                    '<device> -device2 <device2> <test1> <test2> ...'
     else:
         if args[1] == '-device2':
-            message = 'Please specify primary device'
+            parse_error = 'Please specify primary device'
         else:
             if args[1] != 'all' and args[2] == '-device2':
-                devices = [args[1], args[3]]
-                test_names = args[4:]
+                parsed_devices = [args[1], args[3]]
+                parsed_test_names = args[4:]
             else:
-                if test_names == ['all']:
-                    test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
+                if parsed_test_names == ['all']:
+                    parsed_test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
                 else:
-                    test_names = args[2:]
-                    devices = [args[1]]
+                    parsed_test_names = args[2:]
+                    parsed_devices = [args[1]]
 
-    return devices, test_names, message
+    return parsed_devices, parsed_test_names, parse_error
 
 if __name__ == '__main__':
-    print(sys.argv)
-    test_names, devices, message = args = _parse_cmd_line_args(sys.argv)
-    if message:
-        print(message)
+    test_names, devices, error = _parse_cmd_line_args(sys.argv)
+    if error:
+        print(error)
     else:
         run_tests()
