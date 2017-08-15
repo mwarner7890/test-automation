@@ -65,18 +65,23 @@ def _parse_cmd_line_args(args):
         if args[1] == '-device2':
             message = 'Please specify primary device'
         else:
-            if args[2] == '-device2':
+            if args[1] != 'all' and args[2] == '-device2':
                 devices = [args[1], args[3]]
                 test_names = args[4:]
             else:
-                test_names = args[2:]
-                devices = [args[1]]
+                if test_names == ['all']:
+                    test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
+                else:
+                    test_names = args[2:]
+                    devices = [args[1]]
 
-            if test_names == ['all']:
-                test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
-                devices = [args[1]]
+
     return devices, test_names, message
 
 if __name__ == '__main__':
-    pass
-    # run_tests()
+    print(sys.argv)
+    test_names, devices, message = args = _parse_cmd_line_args(sys.argv)
+    if message:
+        print(message)
+    else:
+        run_tests()
