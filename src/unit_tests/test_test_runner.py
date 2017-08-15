@@ -32,19 +32,35 @@ class TestTestRunner(unittest.TestCase):
         self.assertEqual(error, '')
 
     def test_cmd_line_args_throughput_test(self):
-        cmd_args = ['path', 's41_throughput_test', 'device1', 'device2']
+        cmd_args = ['path', 'throughput_test', 's41', 'device1', 'device2']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, ['device1', 'device2'])
         self.assertEqual(test_names, ['s41_throughput_test'])
         self.assertEqual(error, '')
 
     def test_cmd_line_args_throughput_test_without_devices(self):
-        cmd_args = ['path', 's41_throughput_test']
+        cmd_args = ['path', 'throughput_test', 's41']
         devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(devices, [])
         self.assertEqual(test_names, [])
         self.assertEqual(error, 'Please specify the two devices to test.\n'
-                                'Usage: python test_runner.py ..._throughput_test device1 device2')
+                                'Usage: python test_runner.py throughput_test sxx device1 device2')
+
+    def test_cmd_line_args_throughput_test_without_phone_name(self):
+        cmd_args = ['path', 'throughput_test', 'device1', 'device2']
+        devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(devices, [])
+        self.assertEqual(test_names, [])
+        self.assertEqual(error, 'Please specify the two devices to test.\n'
+                                'Usage: python test_runner.py throughput_test sxx device1 device2')
+
+    def test_cmd_line_args_throughput_test_without_args(self):
+        cmd_args = ['path', 'throughput_test']
+        devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(devices, [])
+        self.assertEqual(test_names, [])
+        self.assertEqual(error, 'Please specify the two devices to test.\n'
+                                'Usage: python test_runner.py throughput_test sxx device1 device2')
 
     def test_cmd_line_args_test_only_without_tests_specified(self):
         cmd_args = ['path', '']
@@ -63,7 +79,7 @@ class TestTestRunner(unittest.TestCase):
                                 'To run specific test(s): python test_runner.py test_only test1 test2\n'
                                 'To run standard tests (single device): python test_runner.py standard_tests\n'
                                 'To run throughput tests (between two devices): '
-                                'python test_runner.py sxx_throughput_testing (where sxx is s41, s31 etc...)')
+                                'python test_runner.py throughput_test sxx (where sxx is s41, s31 etc...)')
 
 
 if __name__ == '__main__':

@@ -59,21 +59,18 @@ def _parse_cmd_line_args(args):
     parsed_test_names = []
     parse_error = ''
     if len(args) == 1:
-        parse_error = 'Usage: python test_runner.py ' \
-                   '<device> -device2 <device2> <test1> <test2> ...'
+        parse_error = 'Usage:\n'
+        'To run specific test(s): python test_runner.py test_only test1 test2\n'
+        'To run standard tests (single device): python test_runner.py standard_tests\n'
+        'To run throughput tests (between two devices): '
+        'python test_runner.py sxx_throughput_testing (where sxx is s41, s31 etc...)'
     else:
-        if args[1] == '-device2':
-            parse_error = 'Please specify primary device'
-        else:
-            if args[1] != 'all' and args[2] == '-device2':
-                parsed_devices = [args[1], args[3]]
-                parsed_test_names = args[4:]
-            else:
-                if parsed_test_names == ['all']:
-                    parsed_test_names = [obj for obj in dir(test_cases) if 'test_' in obj]
-                else:
-                    parsed_test_names = args[2:]
-                    parsed_devices = [args[1]]
+        if args[1] == 'test_only':
+            parsed_test_names = args[2:]
+        elif args[1] == 'standard_tests':
+            parsed_test_names = test_cases.standard_tests
+        elif args[1] == 'throughput_tests':
+            parsed_test_names =
 
     return parsed_devices, parsed_test_names, parse_error
 
