@@ -75,10 +75,10 @@ class TestTestRunner(unittest.TestCase):
         self.assertEqual(devices, [])
         self.assertEqual(test_names, [])
         self.assertEqual(error, 'Usage:\n'
-                                'To run specific test(s): python test_runner.py test_only test1 test2\n'
+                                'To run specific test(s): python test_runner.py test_only <test1> <test2>\n'
                                 'To run standard tests (single device): python test_runner.py standard_tests\n'
                                 'To run throughput tests (between two devices): '
-                                'python test_runner.py throughput_testing 2g/3g/4g/wifi (where 2g/3g/4g/wifi is s41, s31 etc...)')
+                                'python test_runner.py throughput_testing <2g/3g/4g/wifi>')
 
 
 if __name__ == '__main__':

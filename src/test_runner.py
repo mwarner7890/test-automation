@@ -64,10 +64,10 @@ def _parse_cmd_line_args(args):
     parse_error = ''
     if len(args) == 1:
         parse_error = 'Usage:\n' \
-                      'To run specific test(s): python test_runner.py test_only test1 test2\n' \
+                      'To run specific test(s): python test_runner.py test_only <test1> <test2>\n' \
                       'To run standard tests (single device): python test_runner.py standard_tests\n' \
                       'To run throughput tests (between two devices): ' \
-                      'python test_runner.py throughput_testing 2g/3g/4g/wifi (where 2g/3g/4g/wifi is s41, s31 etc...)'
+                      'python test_runner.py throughput_testing <2g/3g/4g/wifi>'
     else:
         if args[1] == 'test_only':
             if args[2:]:
