@@ -1,8 +1,13 @@
-# TODO: The module for throughput testing.
+import adb
 
 
 def _test_throughput(ftp_file_path):
     return ftp_file_path
+
+
+def _toggle_usb_tethering():
+    adb.launch_activity('com.android.settings/.TetherSettings')
+    adb.input_tap(210, 360)
 
 
 def test_2g_throughput():
