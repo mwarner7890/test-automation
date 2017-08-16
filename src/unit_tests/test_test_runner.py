@@ -80,6 +80,17 @@ class TestTestRunner(unittest.TestCase):
                                 'To run throughput tests (between two devices): '
                                 'python test_runner.py throughput_testing <2g/3g/4g/wifi>')
 
+    def test_cmd_line_args_invalid_args(self):
+        cmd_args = ['path', 'test_blahblahblah']
+        devices, test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(devices, [])
+        self.assertEqual(test_names, [])
+        self.assertEqual(error, 'Unknown option "test_blahblahblah"\n'
+                                'Usage:\n'
+                                'To run specific test(s): python test_runner.py test_only <test1> <test2>\n'
+                                'To run standard tests (single device): python test_runner.py standard_tests\n'
+                                'To run throughput tests (between two devices): '
+                                'python test_runner.py throughput_testing <2g/3g/4g/wifi>')
 
 if __name__ == '__main__':
     unittest.main()

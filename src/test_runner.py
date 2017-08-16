@@ -90,6 +90,13 @@ def _parse_cmd_line_args(args):
                         parse_error = 'Please specify the two devices to test.\n' \
                                       'Usage: python test_runner.py throughput_test 2g/3g/4g/wifi device1 device2'
                     parsed_devices = args[3:]
+        else:
+            parse_error = 'Unknown option "{}"\n' \
+                            'Usage:\n' \
+                            'To run specific test(s): python test_runner.py test_only <test1> <test2>\n' \
+                            'To run standard tests (single device): python test_runner.py standard_tests\n' \
+                            'To run throughput tests (between two devices): ' \
+                            'python test_runner.py throughput_testing <2g/3g/4g/wifi>'.format(args[1])
 
     return parsed_devices, parsed_test_names, parse_error
 
