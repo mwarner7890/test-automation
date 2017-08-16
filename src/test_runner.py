@@ -64,39 +64,39 @@ def _parse_cmd_line_args(args):
     parse_error = ''
     if len(args) == 1:
         parse_error = 'Usage:\n' \
-                      'To run specific test(s): python test_runner.py test_only <test1> <test2>\n' \
-                      'To run standard tests (single device): python test_runner.py standard_tests\n' \
+                      'To run specific test(s): test_only <test1> <test2>\n' \
+                      'To run standard tests (single device): standard_tests\n' \
                       'To run throughput tests (between two devices): ' \
-                      'python test_runner.py throughput_testing <2g/3g/4g/wifi>'
+                      'throughput_testing <2g/3g/4g/wifi>'
     else:
         if args[1] == 'test_only':
             if args[2:]:
                 parsed_test_names = args[2:]
             else:
                 parse_error = 'Please specify the tests to run.\n' \
-                              'Usage: python test_runner.py test_only test1 test2'
+                              'Usage: test_only test1 test2'
         elif args[1] == 'standard_tests':
             parsed_test_names = [obj for obj in dir(standard_testing) if 'test_' in obj]
         elif args[1] == 'throughput_test':
             if len(args) < 3:
-                parse_error = 'Usage: python test_runner.py throughput_test 2g/3g/4g/wifi device1 device2'
+                parse_error = 'Usage: throughput_test 2g/3g/4g/wifi device1 device2'
             else:
                 if args[2] not in ['2g', '3g', '4g', 'wifi']:
                     parse_error = 'Please specify the speed to test.\n' \
-                                  'Usage: python test_runner.py throughput_test 2g/3g/4g/wifi device1 device2'
+                                  'Usage: throughput_test 2g/3g/4g/wifi device1 device2'
                 else:
                     parsed_test_names = ['test_{}_throughput'.format(args[2])]
                     if len(args) < 4:
                         parse_error = 'Please specify the two devices to test.\n' \
-                                      'Usage: python test_runner.py throughput_test 2g/3g/4g/wifi device1 device2'
+                                      'Usage: throughput_test 2g/3g/4g/wifi device1 device2'
                     parsed_devices = args[3:]
         else:
             parse_error = 'Unknown option "{}"\n' \
                             'Usage:\n' \
-                            'To run specific test(s): python test_runner.py test_only <test1> <test2>\n' \
-                            'To run standard tests (single device): python test_runner.py standard_tests\n' \
+                            'To run specific test(s): test_only <test1> <test2>\n' \
+                            'To run standard tests (single device): standard_tests\n' \
                             'To run throughput tests (between two devices): ' \
-                            'python test_runner.py throughput_testing <2g/3g/4g/wifi>'.format(args[1])
+                            'throughput_testing <2g/3g/4g/wifi>'.format(args[1])
 
     return parsed_devices, parsed_test_names, parse_error
 
