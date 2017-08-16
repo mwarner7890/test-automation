@@ -90,7 +90,7 @@ def _parse_cmd_line_args(args):
     return parsed_devices, parsed_test_names, parse_error
 
 if __name__ == '__main__':
-    test_names, devices, error = _parse_cmd_line_args(sys.argv)
+    devices, test_names, error = _parse_cmd_line_args(sys.argv)
     if error:
         print(error)
     else:
