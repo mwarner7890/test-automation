@@ -1,5 +1,6 @@
 import adb
 import standard_testing
+import throughput_testing
 import sys
 
 
@@ -26,7 +27,10 @@ def run_tests():
                                                 num_of_tests,
                                                 test_name))
         try:
-            test_method = getattr(standard_testing, test_name)
+            if sys.argv[1] == 'throughput_test':
+                test_method = getattr(throughput_testing, test_name)
+            else:
+                test_method = getattr(standard_testing, test_name)
         except AttributeError:
             print('Error: No test case named {}'.format(test_name))
             tear_down()

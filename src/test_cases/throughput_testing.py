@@ -6,16 +6,16 @@ def _test_throughput(ftp_file_path):
 
 
 def test_2g_throughput():
-    pass
+    print('TODO: 2G throughput test!')
 
 
 def test_3g_throughput():
-    pass
+    print('TODO: 2G throughput test!')
 
 
 def test_4g_throughput():
-    pass
+    print('TODO: 3G throughput test!')
 
 
 def test_wifi_throughput():
-    pass
+    print('TODO: WiFi throughput test!')
