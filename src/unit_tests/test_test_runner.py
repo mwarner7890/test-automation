@@ -33,18 +33,19 @@ class TestTestRunner(unittest.TestCase):
         self.assertEqual(test_names, ['test_4g_throughput'])
         self.assertEqual(error, '')
 
-    def test_cmd_line_args_throughput_test_without_speed(self):
+    def test_cmd_line_args_throughput_test_without_network(self):
         cmd_args = ['path', 'throughput_test']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Please specify the speed to test.\n'
+        self.assertEqual(error, 'Please specify the network to test.\n'
                                 'Usage: throughput_test 2g/3g/4g/wifi')
 
     def test_cmd_line_args_throughput_test_without_args(self):
         cmd_args = ['path', 'throughput_test']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Usage: throughput_test 2g/3g/4g/wifi')
+        self.assertEqual(error, 'Please specify the network to test.\n' 
+                         'Usage: throughput_test 2g/3g/4g/wifi')
 
     def test_cmd_line_args_test_only_without_tests_specified(self):
         cmd_args = ['path', 'test_only']

@@ -59,7 +59,6 @@ def eval_test_result(result):
 
 
 def _parse_cmd_line_args(args):
-    parsed_devices = []
     parsed_test_names = []
     parse_error = ''
     if len(args) == 1:
@@ -79,17 +78,14 @@ def _parse_cmd_line_args(args):
             parsed_test_names = [obj for obj in dir(standard_testing) if 'test_' in obj]
         elif args[1] == 'throughput_test':
             if len(args) < 3:
-                parse_error = 'Usage: throughput_test 2g/3g/4g/wifi device1 device2'
+                parse_error = 'Please specify the network to test.\n'\
+                    'Usage: throughput_test 2g/3g/4g/wifi'
             else:
                 if args[2] not in ['2g', '3g', '4g', 'wifi']:
-                    parse_error = 'Please specify the speed to test.\n' \
-                                  'Usage: throughput_test 2g/3g/4g/wifi device1 device2'
+                    parse_error = 'Please specify the network to test.\n'\
+                                  'Usage: throughput_test 2g/3g/4g/wifi'
                 else:
                     parsed_test_names = ['test_{}_throughput'.format(args[2])]
-                    if len(args) < 4:
-                        parse_error = 'Please specify the two devices to test.\n' \
-                                      'Usage: throughput_test 2g/3g/4g/wifi device1 device2'
-                    parsed_devices = args[3:]
         else:
             parse_error = 'Unknown option "{}"\n' \
                             'Usage:\n' \
@@ -98,10 +94,10 @@ def _parse_cmd_line_args(args):
                             'To run throughput tests (between two devices): ' \
                             'throughput_testing <2g/3g/4g/wifi>'.format(args[1])
 
-    return parsed_devices, parsed_test_names, parse_error
+    return parsed_test_names, parse_error
 
 if __name__ == '__main__':
-    devices, test_names, error = _parse_cmd_line_args(sys.argv)
+    test_names, error = _parse_cmd_line_args(sys.argv)
     if error:
         print(error)
     else:
