@@ -7,7 +7,7 @@ def _test_throughput(ftp_file_path):
 
 def _toggle_usb_tethering():
     adb.launch_activity('com.android.settings/.TetherSettings')
-    adb.input_tap(210, 360)
+    adb.input_tap_abs(210, 360)
 
 
 def test_2g_throughput():

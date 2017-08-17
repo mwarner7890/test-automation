@@ -18,11 +18,18 @@ def input_key_event(keyevent):
     run_shell_cmd('input keyevent {}'.format(keyevent))
 
 
-def input_tap(x, y):
+def input_tap_rel(x_perc, y_perc):
+    x_res, y_res = get_screen_resolution()
+    x_relative = (x_perc / 100) * int(x_res)
+    y_relative = (y_perc / 100) * int(y_res)
+    run_shell_cmd('input tap {} {}'.format(str(x_relative), str(y_relative)))
+
+
+def input_tap_abs(x, y):
     run_shell_cmd('input tap {} {}'.format(str(x), str(y)))
 
 
-def input_swipe(startx, starty, endx, endy):
+def input_swipe_abs(startx, starty, endx, endy):
     run_shell_cmd('input swipe {} {} {} {}'.format(str(startx), str(starty), str(endx),
                                                    str(endy)))
 
@@ -33,7 +40,7 @@ def input_text(text):
 
 def unlock_screen_with_pin(pin=None):
     input_key_event('KEYCODE_POWER')
-    input_swipe(320, 1000, 320, 200)
+    input_swipe_abs(320, 1000, 320, 200)
     if pin:
         input_text(str(pin))
         input_key_event('KEYCODE_ENTER')
@@ -42,7 +49,7 @@ def unlock_screen_with_pin(pin=None):
 
 def clear_sim_card_msg():
     if 'No SIM card' in get_screen_xml():
-        input_tap(250, 250)
+        input_tap_abs(250, 250)
 
 
 def launch_activity(activity_name):
@@ -51,7 +58,7 @@ def launch_activity(activity_name):
 
 def clear_all_apps():
     input_key_event('KEYCODE_APP_SWITCH')
-    input_tap(590, 120)
+    input_tap_abs(590, 120)
 
 
 def get_stdout_from_command(cmd):
@@ -61,7 +68,7 @@ def get_stdout_from_command(cmd):
 
 
 def grant_permissions():
-    input_tap(555, 820)
+    input_tap_abs(555, 820)
 
 
 def get_screen_xml():
