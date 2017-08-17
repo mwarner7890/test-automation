@@ -66,3 +66,11 @@ def grant_permissions():
 
 def get_screen_xml():
     return get_stdout_from_command('adb exec-out uiautomator dump /dev/tty')
+
+
+def get_screen_resolution():
+    info = get_stdout_from_command('adb shell dumpsys window')
+    info = info.split('init=')[1].split('x')
+    x = info[0]
+    y = info[1].split(' ')[0]
+    return x, y
