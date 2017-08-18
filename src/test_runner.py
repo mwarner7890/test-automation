@@ -1,10 +1,10 @@
-import adb
 import standard_testing
 import throughput_testing
 import sys
+from adb import Adb
 
 
-def set_up():
+def set_up(adb):
     adb.start_server()
 
     adb.wait_for_device()
@@ -12,12 +12,12 @@ def set_up():
     adb.clear_sim_card_msg()
 
 
-def tear_down():
+def tear_down(adb):
     adb.input_key_event('KEYCODE_HOME')
     adb.input_key_event('KEYCODE_POWER')
 
 
-def run_tests():
+def run_tests(adb):
     num_of_tests = len(test_names)
     test_count = 1
     passed_count = 0
@@ -33,18 +33,18 @@ def run_tests():
                 test_method = getattr(standard_testing, test_name)
         except AttributeError:
             print('Error: No test case named {}'.format(test_name))
-            tear_down()
+            tear_down(adb)
             num_of_tests -= 1
             continue
-        set_up()
-        test_passed = test_method()
+        set_up(adb)
+        test_passed = test_method(adb)
         if test_passed:
             passed_count += 1
         else:
             failed_count += 1
 
         print(eval_test_result(test_passed))
-        tear_down()
+        tear_down(adb)
         test_count += 1
 
     print('Finished running {} tests(s):'.format(num_of_tests))
@@ -101,4 +101,4 @@ if __name__ == '__main__':
     if error:
         print(error)
     else:
-        run_tests()
+        run_tests(Adb())
