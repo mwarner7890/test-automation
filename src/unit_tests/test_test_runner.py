@@ -44,8 +44,8 @@ class TestTestRunner(unittest.TestCase):
         cmd_args = ['path', 'throughput_test']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Please specify the network to test.\n' 
-                         'Usage: throughput_test 2g/3g/4g/wifi')
+        self.assertEqual(error, 'Please specify the network to test.\n'
+                                'Usage: throughput_test 2g/3g/4g/wifi')
 
     def test_cmd_line_args_test_only_without_tests_specified(self):
         cmd_args = ['path', 'test_only']
@@ -58,11 +58,11 @@ class TestTestRunner(unittest.TestCase):
         cmd_args = ['path']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Usage:\n' \
-                'To run standard tests (single device): standard_tests\n' \
-                'To run specific standard test(s): test_only <test1> <test2>\n' \
-                'To run throughput tests (between two devices): ' \
-                'throughput_testing <2g/3g/4g/wifi>')
+        self.assertEqual(error, 'Usage:\n'
+                                'To run standard tests (single device): standard_tests\n'
+                                'To run specific standard test(s): test_only <test1> <test2>\n'
+                                'To run throughput tests (between two devices): '
+                                'throughput_testing <2g/3g/4g/wifi>')
 
     def test_cmd_line_args_invalid_args(self):
         cmd_args = ['path', 'test_blahblahblah']
@@ -70,10 +70,11 @@ class TestTestRunner(unittest.TestCase):
         self.assertEqual(test_names, [])
         self.assertEqual(error, 'Unknown option "test_blahblahblah"\n'
                                 'Usage:\n'
-                                'To run standard tests (single device): standard_tests\n' \
-                'To run specific standard test(s): test_only <test1> <test2>\n' \
-                'To run throughput tests (between two devices): ' \
-                'throughput_testing <2g/3g/4g/wifi>')
+                                'To run standard tests (single device): standard_tests\n'
+                                'To run specific standard test(s): test_only <test1> <test2>\n'
+                                'To run throughput tests (between two devices): '
+                                'throughput_testing <2g/3g/4g/wifi>')
+
 
 if __name__ == '__main__':
     unittest.main()
