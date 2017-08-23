@@ -58,11 +58,11 @@ class TestTestRunner(unittest.TestCase):
         cmd_args = ['path']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Usage:\n'
-                                'To run specific test(s): test_only <test1> <test2>\n'
-                                'To run standard tests (single device): standard_tests\n'
-                                'To run throughput tests (between two devices): '
-                                'throughput_testing <2g/3g/4g/wifi>')
+        self.assertEqual(error, 'Usage:\n' \
+                'To run standard tests (single device): standard_tests\n' \
+                'To run specific standard test(s): test_only <test1> <test2>\n' \
+                'To run throughput tests (between two devices): ' \
+                'throughput_testing <2g/3g/4g/wifi>')
 
     def test_cmd_line_args_invalid_args(self):
         cmd_args = ['path', 'test_blahblahblah']
@@ -70,10 +70,10 @@ class TestTestRunner(unittest.TestCase):
         self.assertEqual(test_names, [])
         self.assertEqual(error, 'Unknown option "test_blahblahblah"\n'
                                 'Usage:\n'
-                                'To run specific test(s): test_only <test1> <test2>\n'
-                                'To run standard tests (single device): standard_tests\n'
-                                'To run throughput tests (between two devices): '
-                                'throughput_testing <2g/3g/4g/wifi>')
+                                'To run standard tests (single device): standard_tests\n' \
+                'To run specific standard test(s): test_only <test1> <test2>\n' \
+                'To run throughput tests (between two devices): ' \
+                'throughput_testing <2g/3g/4g/wifi>')
 
 if __name__ == '__main__':
     unittest.main()

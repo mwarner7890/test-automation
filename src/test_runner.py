@@ -61,12 +61,13 @@ def eval_test_result(result):
 def _parse_cmd_line_args(args):
     parsed_test_names = []
     parse_error = ''
+    usage_msg = 'Usage:\n' \
+                'To run standard tests (single device): standard_tests\n' \
+                'To run specific standard test(s): test_only <test1> <test2>\n' \
+                'To run throughput tests (between two devices): ' \
+                'throughput_testing <2g/3g/4g/wifi>'
     if len(args) == 1:
-        parse_error = 'Usage:\n' \
-                      'To run standard tests (single device): standard_tests\n' \
-                      'To run specific standard test(s): test_only <test1> <test2>\n' \
-                      'To run throughput tests (between two devices): ' \
-                      'throughput_testing <2g/3g/4g/wifi>'
+        parse_error = usage_msg
     else:
         if args[1] == 'test_only':
             if args[2:]:
@@ -88,11 +89,7 @@ def _parse_cmd_line_args(args):
                     parsed_test_names = ['test_{}_throughput'.format(args[2])]
         else:
             parse_error = 'Unknown option "{}"\n' \
-                            'Usage:\n' \
-                            'To run standard tests (single device): standard_tests\n' \
-                            'To run specific test(s): test_only <test1> <test2>\n' \
-                            'To run throughput tests (between two devices): ' \
-                            'throughput_testing <2g/3g/4g/wifi>'.format(args[1])
+                            '{}'.format(args[1], usage_msg)
 
     return parsed_test_names, parse_error
 
