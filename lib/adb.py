@@ -56,7 +56,8 @@ class Adb:
 
     def clear_all_apps(self):
         self.input_key_event('KEYCODE_APP_SWITCH')
-        self.input_tap(x=590, y=120)
+        self.input_swipe(start_x="44%", start_y="16%", end_x="44%", end_y="78%")
+        self.input_tap(x="82%", y="9%")
 
     @staticmethod
     def get_stdout_from_command(cmd):
@@ -65,7 +66,7 @@ class Adb:
         )
 
     def grant_permissions(self):
-        self.input_tap(x=555, y=820)
+        self.input_tap(x="77%", y="64%")
 
     def get_screen_xml(self):
         return self.get_stdout_from_command('adb exec-out uiautomator dump /dev/tty')
@@ -76,5 +77,3 @@ class Adb:
         x = info[0]
         y = info[1].split(' ')[0]
         return {'x': x, 'y': y}
-
-# TODO: Convert all coordinates to relative!!!
