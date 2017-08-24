@@ -54,10 +54,15 @@ class Adb:
     def launch_activity(self, activity_name):
         self.run_shell_cmd('am start -n {}'.format(activity_name))
 
-    def clear_all_apps(self):
+    def clear_all_apps(self):  # Android 7 only!!!
         self.input_key_event('KEYCODE_APP_SWITCH')
         self.input_swipe(start_x="44%", start_y="16%", end_x="44%", end_y="78%")
         self.input_tap(x="82%", y="9%")
+
+    def clear_most_recent_app(self):
+        self.input_key_event('KEYCODE_APP_SWITCH')
+        self.input_swipe(start_x="44%", start_y="78%", end_x="44%", end_y="16%")
+        self.input_swipe(start_x="25%", start_y="75%", end_x="100%", end_y="75%")
 
     @staticmethod
     def get_stdout_from_command(cmd):

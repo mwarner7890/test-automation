@@ -17,7 +17,7 @@ def test_file_commander_version(adb):
     adb.input_tap(x="21%", y="95%")
 
     screen_xml = adb.get_screen_xml()
-    adb.clear_all_apps()
+    adb.clear_most_recent_app()
 
     return '3.9.14746' in screen_xml
 
