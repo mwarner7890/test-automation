@@ -7,7 +7,6 @@ from adb import Adb
 def set_up(adb):
     adb.start_server()
 
-    adb.wait_for_device()
     adb.unlock_screen_with_pin()
     adb.clear_sim_card_msg()
 
@@ -92,6 +91,7 @@ def _parse_cmd_line_args(args):
                             '{}'.format(args[1], usage_msg)
 
     return parsed_test_names, parse_error
+
 
 if __name__ == '__main__':
     test_names, error = _parse_cmd_line_args(sys.argv)

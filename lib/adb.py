@@ -4,15 +4,12 @@ from subprocess import check_output
 
 class Adb:
     def __init__(self):
+        call(['adb', 'wait-for-device'])
         self.screen_res = self.get_screen_resolution()
 
     @staticmethod
     def start_server():
         call(['adb', 'start-server'])
-    
-    @staticmethod
-    def wait_for_device():
-        call(['adb', 'wait-for-device'])
 
     @staticmethod
     def run_shell_cmd(cmd):
