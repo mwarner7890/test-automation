@@ -79,3 +79,7 @@ class Adb:
         x = info[0]
         y = info[1].split(' ')[0]
         return {'x': x, 'y': y}
+
+    def get_device_names(self):
+        raw_output = self.get_stdout_from_command('adb devices')
+        return raw_output.replace('\\tdevice', '').split('\\r\\n')[1:][:-2]
