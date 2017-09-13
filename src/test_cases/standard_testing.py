@@ -1,3 +1,6 @@
+import adb as adb_module
+
+
 def _start_file_commander(adb):
     adb.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
     if 'Welcome to' in adb.get_screen_xml():
@@ -23,6 +26,6 @@ def test_file_commander_version(adb):
 
 
 def test_file_commander_version_directly(adb):
-    dump = adb.get_stdout_from_command(
+    dump = adb_module.get_stdout_from_command(
         'adb shell dumpsys package com.mobisystems.fileman')
     return '3.9.14746' in dump

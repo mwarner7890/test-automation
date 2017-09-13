@@ -3,17 +3,20 @@ from subprocess import check_output
 
 
 class Adb:
-    def __init__(self):
-        call(['adb', 'wait-for-device'])
+    def __init__(self, **kwargs):
+        self.device_name = kwargs.get('device_name')
         self.screen_res = self.get_screen_resolution()
+        call(['adb', 'wait-for-device'])
 
     @staticmethod
     def start_server():
         call(['adb', 'start-server'])
 
-    @staticmethod
-    def run_shell_cmd(cmd):
-        call(['adb', 'shell'] + cmd.split(' '))
+    def run_shell_cmd(self, cmd):
+        if self.device_name:
+            call(['adb', '-s', self.device_name, 'shell'] + cmd.split(' '))
+        else:
+            call(['adb', 'shell'] + cmd.split(' '))
 
     def input_key_event(self, keyevent):
         self.run_shell_cmd('input keyevent {}'.format(keyevent))
@@ -61,25 +64,29 @@ class Adb:
         self.input_swipe(start_x="44%", start_y="78%", end_x="44%", end_y="16%")
         self.input_swipe(start_x="25%", start_y="75%", end_x="100%", end_y="75%")
 
-    @staticmethod
-    def get_stdout_from_command(cmd):
-        return str(
-            check_output(cmd.split(' '))
-        )
-
     def grant_permissions(self):
         self.input_tap(x="77%", y="64%")
 
     def get_screen_xml(self):
-        return self.get_stdout_from_command('adb exec-out uiautomator dump /dev/tty')
+        if self.device_name:
+            return get_stdout_from_command('adb -s {} exec-out uiautomator dump /dev/tty'
+                                           .format(self.device_name))
+        return get_stdout_from_command('adb exec-out uiautomator dump /dev/tty')
 
     def get_screen_resolution(self):
-        info = self.get_stdout_from_command('adb shell dumpsys window')
+        if self.device_name:
+            info = get_stdout_from_command('adb -s {} shell dumpsys window'.
+                                           format(self.device_name))
+        else:
+            info = get_stdout_from_command('adb shell dumpsys window')
+
         info = info.split('init=')[1].split('x')
         x = info[0]
         y = info[1].split(' ')[0]
         return {'x': x, 'y': y}
 
-    def get_device_names(self):
-        raw_output = self.get_stdout_from_command('adb devices')
-        return raw_output.replace('\\tdevice', '').split('\\r\\n')[1:][:-2]
+
+def get_stdout_from_command(cmd):
+    return str(
+        check_output(cmd.split(' '))
+    )
