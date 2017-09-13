@@ -8,7 +8,6 @@ def set_up(adb_instance):
     adb_instance.start_server()
 
     adb_instance.unlock_screen_with_pin()
-    adb_instance.clear_sim_card_msg()
 
 
 def tear_down(adb_instance):
@@ -23,12 +22,14 @@ def run_tests(**kwargs):
     test_count = 1
     passed_count = 0
     failed_count = 0
+    running_throughput_test = sys.argv[1] == 'throughput_test'
+    throughput_test_count = 10
     for test_name in test_names:
         print('Running test ({}/{}): {}'.format(test_count,
                                                 num_of_tests,
                                                 test_name))
         try:
-            if sys.argv[1] == 'throughput_test':
+            if running_throughput_test:
                 test_method = getattr(throughput_testing, test_name)
             else:
                 test_method = getattr(standard_testing, test_name)
@@ -39,10 +40,17 @@ def run_tests(**kwargs):
                     tear_down(adb_instance)
             num_of_tests -= 1
             continue
-        for adb_instance in adb_instances:
-            if adb_instance:
-                set_up(adb_instance)
-                test_passed = test_method(adb_instance)
+        if running_throughput_test:
+            for _ in range(0, throughput_test_count):
+                for adb_instance in adb_instances:
+                    if adb_instance:
+                        set_up(adb_instance)
+                        test_passed = test_method(adb_instance)  # TODO: throughput tests don't 'pass'
+                        tear_down(adb_instance)
+        else:
+            set_up(adb_instances[0])
+            test_passed = test_method(adb_instances[0])
+
         if test_passed:
             passed_count += 1
         else:

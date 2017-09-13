@@ -47,10 +47,6 @@ class Adb:
             self.input_key_event('KEYCODE_ENTER')
         self.input_key_event('KEYCODE_HOME')
 
-    def clear_sim_card_msg(self):
-        if 'No SIM card' in self.get_screen_xml():
-            self.input_tap(x=250, y=250)
-
     def launch_activity(self, activity_name):
         self.run_shell_cmd('am start -n {}'.format(activity_name))
 
