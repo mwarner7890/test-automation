@@ -16,12 +16,25 @@ def tear_down(adb_instance):
     adb_instance.input_key_event('KEYCODE_POWER')
 
 
-def _load_ftp_config(ftp_json_path):
-    if os.path.isfile(ftp_json_path):
-        return _load_json_file(ftp_json_path)
-    print('An FTP configuration file has been placed in your Documents directory.\n'
-          'Please edit this file with the desired settings and run the test runner again.')
-    # TODO: Copy
+def _load_ftp_config(ftp_config_dir, ftp_config_fname):
+    ftp_config_fullpath = os.path.join(ftp_config_dir, ftp_config_fname)
+    if os.path.isfile(ftp_config_fullpath):
+        return _load_json_file(ftp_config_fullpath)
+    os.makedirs(ftp_config_dir)
+    with open(ftp_config_fullpath, 'w') as jsonfile:
+        jsonfile.write(json.dumps({
+            'address': 'changeme',
+            'username': 'changeme',
+            'password': 'changeme',
+            'download_dir': 'Test-team/Download',
+            '2g_download_filename': '2G_Data_Test.zip',
+            '3g_download_filename': '3G_Data_Test.zip',
+            '4g_download_filename': '4G_Data_Test.zip',
+            'wifi_download_filename': 'WiFi-Data_Test.zip'
+                                   },
+                                  indent=4))
+        print('An FTP configuration file has been placed in Documents/throughput_test\n'
+              'Please edit this file with the desired settings and run the test runner again.')
     exit(1)
 
 
@@ -57,8 +70,9 @@ def run_tests(**kwargs):
             num_of_tests -= 1
             continue
         if running_throughput_test:
-            ftp_config = _load_ftp_config(os.path.expanduser('~') +
-                                          '\Documents\\ftp_config.json')
+            ftp_config_dir = os.path.expanduser('~') + '/Documents/throughput_test'
+            ftp_config_fname = 'ftp_config.json'
+            ftp_config = _load_ftp_config(ftp_config_dir, ftp_config_fname)
             for _ in range(0, throughput_test_count):
                 for adb_instance in adb_instances:
                     if adb_instance:
