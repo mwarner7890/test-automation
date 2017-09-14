@@ -20,7 +20,8 @@ def _load_ftp_config(ftp_config_dir, ftp_config_fname):
     ftp_config_fullpath = os.path.join(ftp_config_dir, ftp_config_fname)
     if os.path.isfile(ftp_config_fullpath):
         return _load_json_file(ftp_config_fullpath)
-    os.makedirs(ftp_config_dir)
+    if not os.path.isdir(ftp_config_dir):
+        os.makedirs(ftp_config_dir)
     with open(ftp_config_fullpath, 'w') as jsonfile:
         jsonfile.write(json.dumps({
             'address': 'changeme',
