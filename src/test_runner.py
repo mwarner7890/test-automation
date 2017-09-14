@@ -1,4 +1,6 @@
 import adb as adb_module
+import json
+import os
 import standard_testing
 import throughput_testing
 import sys
@@ -6,13 +8,27 @@ import sys
 
 def set_up(adb_instance):
     adb_instance.start_server()
-
     adb_instance.unlock_screen_with_pin()
 
 
 def tear_down(adb_instance):
     adb_instance.input_key_event('KEYCODE_HOME')
     adb_instance.input_key_event('KEYCODE_POWER')
+
+
+def _load_ftp_config(ftp_json_path):
+    if os.path.isfile(ftp_json_path):
+        return _load_json_file(ftp_json_path)
+    print('An FTP configuration file has been placed in your Documents directory.\n'
+          'Please edit this file with the desired settings and run the test runner again.')
+    # TODO: Copy
+    exit(1)
+
+
+def _load_json_file(fpath):
+    with open(fpath, 'r') as jsonfile:
+        loaded_json = json.load(jsonfile)
+    return loaded_json
 
 
 def run_tests(**kwargs):
@@ -41,6 +57,8 @@ def run_tests(**kwargs):
             num_of_tests -= 1
             continue
         if running_throughput_test:
+            ftp_config = _load_ftp_config(os.path.expanduser('~') +
+                                          '\Documents\\ftp_config.json')
             for _ in range(0, throughput_test_count):
                 for adb_instance in adb_instances:
                     if adb_instance:
