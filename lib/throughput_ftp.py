@@ -6,8 +6,10 @@ from ftplib import FTP
 
 class ThroughputFTP:
     def __init__(self, ftp_config_dir, ftp_config_fname):
-        ftp_config = _load_ftp_config(ftp_config_dir, ftp_config_fname)
+        self._load_ftp_config(ftp_config_dir, ftp_config_fname)
 
+    def _load_ftp_config(self, ftp_config_dir, ftp_config_fname):
+        ftp_config = _load_ftp_config_from_json(ftp_config_dir, ftp_config_fname)
         self.address = ftp_config['address']
         self.username = ftp_config['username']
         self.password = ftp_config['password']
@@ -27,10 +29,16 @@ class ThroughputFTP:
                 ftp.retrbinary('RETR {}'.format(filename), tfile.write)
 
 
-def _load_ftp_config(ftp_config_dir, ftp_config_fname):
+def _load_ftp_config_from_json(ftp_config_dir, ftp_config_fname):
     ftp_config_fullpath = os.path.join(ftp_config_dir, ftp_config_fname)
     if os.path.isfile(ftp_config_fullpath):
         return _load_json_file(ftp_config_fullpath)
+    _create_default_config(ftp_config_dir, ftp_config_fullpath)
+
+    exit(1)
+
+
+def _create_default_config(ftp_config_dir, ftp_config_fullpath):
     if not os.path.isdir(ftp_config_dir):
         os.makedirs(ftp_config_dir)
     with open(ftp_config_fullpath, 'w') as jsonfile:
@@ -45,12 +53,10 @@ def _load_ftp_config(ftp_config_dir, ftp_config_fname):
             'wifi_download_filename': 'WiFi-Data_Test.zip',
             'download_timeout': '60',
             'retry_timer': '8'
-                                   }, indent=4))
+        }, indent=4))
 
         print('An FTP configuration file has been placed in Documents/throughput_test\n'
               'Please edit this file with the desired settings and run the test runner again.')
-
-    exit(1)
 
 
 def _load_json_file(fpath):

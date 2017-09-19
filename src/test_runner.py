@@ -2,6 +2,7 @@ import adb as adb_module
 import os
 import standard_testing
 import throughput_testing
+import subprocess
 import sys
 from throughput_ftp import ThroughputFTP
 
@@ -50,18 +51,18 @@ def run_tests(**kwargs):
                     if adb_instance:
                         set_up(adb_instance)
                         adb_instance.ftp = ftp
-                        test_passed = test_method(adb_instance)  # TODO: throughput tests don't 'pass'
+                        test_method(adb_instance)
                         tear_down(adb_instance)
         else:
             set_up(adb_instances[0])
             test_passed = test_method(adb_instances[0])
 
-        if test_passed:
-            passed_count += 1
-        else:
-            failed_count += 1
+            if test_passed:
+                passed_count += 1
+            else:
+                failed_count += 1
+            print(eval_test_result(test_passed))
 
-        print(eval_test_result(test_passed))
         for adb_instance in adb_instances:
             if adb_instance:
                 tear_down(adb_instance)
@@ -125,9 +126,18 @@ if __name__ == '__main__':
         print(error)
     else:
         if 'throughput' in test_names[0]:
-            device_name_1, device_name_2 = _get_device_names()
-            adb_device_1 = adb_module.Adb(device_name=device_name_1)
-            adb_device_2 = adb_module.Adb(device_name=device_name_2)
-            run_tests(adb_device_1=adb_device_1, adb_device_2=adb_device_2)
+            try:
+                device_name_1, device_name_2 = _get_device_names()
+                adb_device_1 = adb_module.Adb(device_name=device_name_1)
+                adb_device_2 = adb_module.Adb(device_name=device_name_2)
+                run_tests(adb_device_1=adb_device_1, adb_device_2=adb_device_2)
+            except ValueError:
+                print('Please connect two devices for throughput testing',
+                      file=sys.stderr)
+
         else:
-            run_tests(adb_device_1=adb_module.Adb())
+            try:
+                run_tests(adb_device_1=adb_module.Adb())
+            except subprocess.CalledProcessError:
+                print('Please connect one device for standard tests',
+                      file=sys.stderr)
