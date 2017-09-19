@@ -26,6 +26,7 @@ def run_tests(**kwargs):
     failed_count = 0
     running_throughput_test = sys.argv[1] == 'throughput_test'
     throughput_test_count = 10
+    throughput_test_results = []
     for test_name in test_names:
         print('Running test ({}/{}): {}'.format(test_count,
                                                 num_of_tests,
@@ -47,12 +48,14 @@ def run_tests(**kwargs):
             ftp_config_fname = 'ftp_config.json'
             ftp = ThroughputFTP(ftp_config_dir, ftp_config_fname)
             for _ in range(0, throughput_test_count):
+                temp_results = []
                 for adb_instance in adb_instances:
                     if adb_instance:
                         set_up(adb_instance)
                         adb_instance.ftp = ftp
-                        test_method(adb_instance)
+                        temp_results.append(test_method(adb_instance))
                         tear_down(adb_instance)
+                throughput_test_results.append(temp_results)
         else:
             set_up(adb_instances[0])
             test_passed = test_method(adb_instances[0])
