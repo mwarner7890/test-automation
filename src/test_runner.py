@@ -26,7 +26,7 @@ def run_tests(**kwargs):
     passed_count = 0
     failed_count = 0
     running_throughput_test = sys.argv[1] == 'throughput_test'
-    throughput_test_count = 10
+    throughput_test_count = 1
     throughput_test_results = []
     throughput_test_name = ''
     for test_name in test_names:
@@ -74,11 +74,13 @@ def run_tests(**kwargs):
                 tear_down(adb_instance)
         test_count += 1
 
-    print('Finished running {} tests(s):'.format(num_of_tests))
-    print('{} passed'.format(passed_count))
-    print('{} failed'.format(failed_count))
+    if running_throughput_test:
+        print('Finished running {} tests(s):'.format(num_of_tests))
+        print('{} passed'.format(passed_count))
+        print('{} failed'.format(failed_count))
 
-    _save_throughput_results_to_csv(throughput_test_results, throughput_test_name)
+        _save_throughput_results_to_csv(throughput_test_results,
+                                        throughput_test_name + '.csv')
 
 
 def eval_test_result(result):
@@ -88,11 +90,12 @@ def eval_test_result(result):
 
 
 def _save_throughput_results_to_csv(results, csv_filename):
-    results_dir = os.path.expanduser('~') + '/Documents/throughput_test/results'
+    results_dir = os.path.join(os.path.expanduser('~'), 'Documents', 'throughput_test',
+                               'results')
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
 
-    with open(os.path.join(results_dir, csv_filename)) as csvfile:
+    with open(os.path.join(results_dir, csv_filename), 'w+') as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         for result in results:
             csvwriter.writerow([result[0], result[1]])
