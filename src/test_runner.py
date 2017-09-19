@@ -1,9 +1,9 @@
 import adb as adb_module
-import json
 import os
 import standard_testing
 import throughput_testing
 import sys
+from throughput_ftp import ThroughputFTP
 
 
 def set_up(adb_instance):
@@ -14,35 +14,6 @@ def set_up(adb_instance):
 def tear_down(adb_instance):
     adb_instance.input_key_event('KEYCODE_HOME')
     adb_instance.input_key_event('KEYCODE_POWER')
-
-
-def _load_ftp_config(ftp_config_dir, ftp_config_fname):
-    ftp_config_fullpath = os.path.join(ftp_config_dir, ftp_config_fname)
-    if os.path.isfile(ftp_config_fullpath):
-        return _load_json_file(ftp_config_fullpath)
-    if not os.path.isdir(ftp_config_dir):
-        os.makedirs(ftp_config_dir)
-    with open(ftp_config_fullpath, 'w') as jsonfile:
-        jsonfile.write(json.dumps({
-            'address': 'changeme',
-            'username': 'changeme',
-            'password': 'changeme',
-            'download_dir': 'Test-team/Download',
-            '2g_download_filename': '2G_Data_Test.zip',
-            '3g_download_filename': '3G_Data_Test.zip',
-            '4g_download_filename': '4G_Data_Test.zip',
-            'wifi_download_filename': 'WiFi-Data_Test.zip'
-                                   },
-                                  indent=4))
-        print('An FTP configuration file has been placed in Documents/throughput_test\n'
-              'Please edit this file with the desired settings and run the test runner again.')
-    exit(1)
-
-
-def _load_json_file(fpath):
-    with open(fpath, 'r') as jsonfile:
-        loaded_json = json.load(jsonfile)
-    return loaded_json
 
 
 def run_tests(**kwargs):
@@ -73,11 +44,12 @@ def run_tests(**kwargs):
         if running_throughput_test:
             ftp_config_dir = os.path.expanduser('~') + '/Documents/throughput_test'
             ftp_config_fname = 'ftp_config.json'
-            ftp_config = _load_ftp_config(ftp_config_dir, ftp_config_fname)
+            ftp = ThroughputFTP(ftp_config_dir, ftp_config_fname)
             for _ in range(0, throughput_test_count):
                 for adb_instance in adb_instances:
                     if adb_instance:
                         set_up(adb_instance)
+                        adb_instance.ftp = ftp
                         test_passed = test_method(adb_instance)  # TODO: throughput tests don't 'pass'
                         tear_down(adb_instance)
         else:

@@ -1,3 +1,4 @@
+import os
 from subprocess import call
 from subprocess import check_output
 
@@ -6,17 +7,20 @@ class Adb:
     def __init__(self, **kwargs):
         self.device_name = kwargs.get('device_name')
         self.screen_res = self.get_screen_resolution()
-        call(['adb', 'wait-for-device'])
+        self._call_silently(['adb', 'wait-for-device'])
 
     @staticmethod
-    def start_server():
-        call(['adb', 'start-server'])
+    def _call_silently(cmd):
+        call(cmd, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+
+    def start_server(self):
+        self._call_silently(['adb', 'start-server'])
 
     def run_shell_cmd(self, cmd):
         if self.device_name:
-            call(['adb', '-s', self.device_name, 'shell'] + cmd.split(' '))
+            self._call_silently(['adb', '-s', self.device_name, 'shell'] + cmd.split(' '))
         else:
-            call(['adb', 'shell'] + cmd.split(' '))
+            self._call_silently(['adb', 'shell'] + cmd.split(' '))
 
     def input_key_event(self, keyevent):
         self.run_shell_cmd('input keyevent {}'.format(keyevent))
@@ -46,6 +50,9 @@ class Adb:
             self.input_text(str(pin))
             self.input_key_event('KEYCODE_ENTER')
         self.input_key_event('KEYCODE_HOME')
+
+    def lock_screen(self):
+        self.input_key_event('KEYCODE_POWER')
 
     def launch_activity(self, activity_name):
         self.run_shell_cmd('am start -n {}'.format(activity_name))
