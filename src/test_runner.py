@@ -1,4 +1,5 @@
 import adb as adb_module
+import csv
 import os
 import standard_testing
 import throughput_testing
@@ -27,6 +28,7 @@ def run_tests(**kwargs):
     running_throughput_test = sys.argv[1] == 'throughput_test'
     throughput_test_count = 10
     throughput_test_results = []
+    throughput_test_name = ''
     for test_name in test_names:
         print('Running test ({}/{}): {}'.format(test_count,
                                                 num_of_tests,
@@ -44,6 +46,7 @@ def run_tests(**kwargs):
             num_of_tests -= 1
             continue
         if running_throughput_test:
+            throughput_test_name = test_names[0]
             ftp_config_dir = os.path.expanduser('~') + '/Documents/throughput_test'
             ftp_config_fname = 'ftp_config.json'
             ftp = ThroughputFTP(ftp_config_dir, ftp_config_fname)
@@ -75,11 +78,24 @@ def run_tests(**kwargs):
     print('{} passed'.format(passed_count))
     print('{} failed'.format(failed_count))
 
+    _save_throughput_results_to_csv(throughput_test_results, throughput_test_name)
+
 
 def eval_test_result(result):
     if result:
         return 'Test passed'
     return 'Test failed'
+
+
+def _save_throughput_results_to_csv(results, csv_filename):
+    results_dir = os.path.expanduser('~') + '/Documents/throughput_test/results'
+    if not os.path.isdir(results_dir):
+        os.makedirs(results_dir)
+
+    with open(os.path.join(results_dir, csv_filename)) as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',')
+        for result in results:
+            csvwriter.writerow([result[0], result[1]])
 
 
 def _parse_cmd_line_args(args):
