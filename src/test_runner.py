@@ -26,7 +26,7 @@ def run_tests(**kwargs):
     passed_count = 0
     failed_count = 0
     running_throughput_test = sys.argv[1] == 'throughput_test'
-    throughput_test_count = 10
+    throughput_test_count = 3
     throughput_test_results = []
     throughput_test_name = ''
     for test_name in test_names:
@@ -148,7 +148,7 @@ def _get_device_names():
 
 def _get_device_model_name(device_name):
     return adb_module.get_stdout_from_command(
-        'adb -s {} shell getprop ro.product.model'.format(device_name))[2:5]
+        'adb -s {} shell getprop ro.product.model'.format(device_name))[2:][:-5]
 
 
 if __name__ == '__main__':

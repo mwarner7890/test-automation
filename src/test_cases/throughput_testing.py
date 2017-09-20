@@ -4,8 +4,12 @@ import time
 
 
 def _toggle_usb_tethering(adb):
-    adb.launch_activity('com.android.settings/.TetherSettings')
-    adb.input_tap(x="29%", y="28%")
+    if 'Nexus 6' in adb.model_name:
+        adb.launch_activity('com.android.settings/.TetherSettings')
+        adb.input_tap(x="19%", y="18%")
+    else:
+        adb.launch_activity('com.android.settings/.TetherSettings')
+        adb.input_tap(x="29%", y="28%")
 
 
 def _test_throughput(adb, download_filename):
