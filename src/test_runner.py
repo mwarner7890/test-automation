@@ -26,7 +26,7 @@ def run_tests(**kwargs):
     passed_count = 0
     failed_count = 0
     running_throughput_test = sys.argv[1] == 'throughput_test'
-    throughput_test_count = 1
+    throughput_test_count = 10
     throughput_test_results = []
     throughput_test_name = ''
     for test_name in test_names:
@@ -80,7 +80,8 @@ def run_tests(**kwargs):
         print('{} failed'.format(failed_count))
 
         _save_throughput_results_to_csv(throughput_test_results,
-                                        throughput_test_name + '.csv')
+                                        throughput_test_name + '.csv', adb_instances[0].model_name,
+                                        adb_instances[1].model_name)
 
 
 def eval_test_result(result):
@@ -89,14 +90,17 @@ def eval_test_result(result):
     return 'Test failed'
 
 
-def _save_throughput_results_to_csv(results, csv_filename):
+def _save_throughput_results_to_csv(results, csv_filename, device_model_name_1,
+                                    device_model_name_2):
     results_dir = os.path.join(os.path.expanduser('~'), 'Documents', 'throughput_test',
                                'results')
     if not os.path.isdir(results_dir):
         os.makedirs(results_dir)
 
-    with open(os.path.join(results_dir, csv_filename), 'w+') as csvfile:
+    with open(os.path.join(results_dir, csv_filename), 'w+',
+              newline="\n", encoding="utf-8") as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
+        csvwriter.writerow([device_model_name_1, device_model_name_2])
         for result in results:
             csvwriter.writerow([result[0], result[1]])
 
@@ -142,6 +146,11 @@ def _get_device_names():
     return raw_output.replace('\\tdevice', '').split('\\r\\n')[1:][:-2]
 
 
+def _get_device_model_name(device_name):
+    return adb_module.get_stdout_from_command(
+        'adb -s {} shell getprop ro.product.model'.format(device_name))[2:5]
+
+
 if __name__ == '__main__':
     test_names, error = _parse_cmd_line_args(sys.argv)
     if error:
@@ -150,8 +159,10 @@ if __name__ == '__main__':
         if 'throughput' in test_names[0]:
             try:
                 device_name_1, device_name_2 = _get_device_names()
-                adb_device_1 = adb_module.Adb(device_name=device_name_1)
-                adb_device_2 = adb_module.Adb(device_name=device_name_2)
+                adb_device_1 = adb_module.Adb(device_name=device_name_1,
+                                              model_name=_get_device_model_name(device_name_1))
+                adb_device_2 = adb_module.Adb(device_name=device_name_2,
+                                              model_name=_get_device_model_name(device_name_2))
                 run_tests(adb_device_1=adb_device_1, adb_device_2=adb_device_2)
             except ValueError:
                 print('Please connect two devices for throughput testing',

@@ -15,7 +15,7 @@ def _test_throughput(adb, download_filename):
     while True:
         try:
             print('Downloading {}/{} through device {}'.
-                  format(adb.ftp.download_dir, download_filename, adb.device_name))
+                  format(adb.ftp.download_dir, download_filename, adb.model_name))
             time_started = time.time()
             adb.ftp.login_and_download_file_from_ftp(download_filename)
             time_taken = round(time.time() - time_started)

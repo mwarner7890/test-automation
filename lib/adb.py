@@ -6,6 +6,7 @@ from subprocess import check_output
 class Adb:
     def __init__(self, **kwargs):
         self.device_name = kwargs.get('device_name')
+        self.model_name = kwargs.get('model_name')
         self.screen_res = self.get_screen_resolution()
         self._call_silently(['adb', 'wait-for-device'])
 
