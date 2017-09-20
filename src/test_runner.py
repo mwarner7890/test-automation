@@ -26,7 +26,6 @@ def run_tests(**kwargs):
     passed_count = 0
     failed_count = 0
     running_throughput_test = sys.argv[1] == 'throughput_test'
-    throughput_test_count = 3
     throughput_test_results = []
     throughput_test_name = ''
     for test_name in test_names:
@@ -50,7 +49,7 @@ def run_tests(**kwargs):
             ftp_config_dir = os.path.expanduser('~') + '/Documents/throughput_test'
             ftp_config_fname = 'ftp_config.json'
             ftp = ThroughputFTP(ftp_config_dir, ftp_config_fname)
-            for _ in range(0, throughput_test_count):
+            for _ in range(0, ftp.test_count):
                 temp_results = []
                 for adb_instance in adb_instances:
                     if adb_instance:
@@ -147,8 +146,9 @@ def _get_device_names():
 
 
 def _get_device_model_name(device_name):
-    return adb_module.get_stdout_from_command(
-        'adb -s {} shell getprop ro.product.model'.format(device_name))[2:][:-5]
+    model_name = adb_module.get_stdout_from_command(
+        'adb -s {} shell getprop ro.product.model'.format(device_name))
+    return model_name.replace('b\'', '').replace('\\r', '').replace('\\n', '')[:-1]
 
 
 if __name__ == '__main__':

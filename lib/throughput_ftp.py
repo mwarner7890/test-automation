@@ -18,6 +18,7 @@ class ThroughputFTP:
         self.three_g_download_filename = ftp_config['3g_download_filename']
         self.four_g_download_filename = ftp_config['4g_download_filename']
         self.wifi_download_filename = ftp_config['wifi_download_filename']
+        self.test_count = int(ftp_config['test_count'])
         self.download_timeout = int(ftp_config['download_timeout'])
         self.retry_timer = int(ftp_config['retry_timer'])
 
@@ -51,6 +52,7 @@ def _create_default_config(ftp_config_dir, ftp_config_fullpath):
             '3g_download_filename': '3G_Data_Test.zip',
             '4g_download_filename': '4G_Data_Test.zip',
             'wifi_download_filename': 'WiFi-Data_Test.zip',
+            'test_count': '10',
             'download_timeout': '60',
             'retry_timer': '8'
         }, indent=4))
