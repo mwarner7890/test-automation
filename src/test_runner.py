@@ -111,7 +111,7 @@ def _parse_cmd_line_args(args):
                 'To run standard tests (single device): standard_tests\n' \
                 'To run specific standard test(s): test_only <test1> <test2>\n' \
                 'To run throughput tests (between two devices): ' \
-                'throughput_testing <2g/3g/4g/wifi>'
+                'throughput_test <2g/3g/4g/wifi>'
     if len(args) == 1:
         parse_error = usage_msg
     else:

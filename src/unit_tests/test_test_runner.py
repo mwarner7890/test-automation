@@ -62,7 +62,7 @@ class TestTestRunner(unittest.TestCase):
                                 'To run standard tests (single device): standard_tests\n'
                                 'To run specific standard test(s): test_only <test1> <test2>\n'
                                 'To run throughput tests (between two devices): '
-                                'throughput_testing <2g/3g/4g/wifi>')
+                                'throughput_test <2g/3g/4g/wifi>')
 
     def test_cmd_line_args_invalid_args(self):
         cmd_args = ['path', 'test_blahblahblah']
@@ -73,7 +73,7 @@ class TestTestRunner(unittest.TestCase):
                                 'To run standard tests (single device): standard_tests\n'
                                 'To run specific standard test(s): test_only <test1> <test2>\n'
                                 'To run throughput tests (between two devices): '
-                                'throughput_testing <2g/3g/4g/wifi>')
+                                'throughput_test <2g/3g/4g/wifi>')
 
 
 if __name__ == '__main__':
