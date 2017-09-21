@@ -167,6 +167,8 @@ if __name__ == '__main__':
             except ValueError:
                 print('Please connect two devices for throughput testing',
                       file=sys.stderr)
+            except KeyboardInterrupt:
+                print('Stopping setup... (interrupted by user)')
 
         else:
             try:
@@ -174,3 +176,5 @@ if __name__ == '__main__':
             except subprocess.CalledProcessError:
                 print('Please connect one device for standard tests',
                       file=sys.stderr)
+            except KeyboardInterrupt:
+                print('Stopping tests... (interrupted by user)')
