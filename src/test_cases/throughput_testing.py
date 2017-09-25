@@ -4,12 +4,10 @@ import time
 
 
 def _toggle_usb_tethering(adb):
-    if adb.model_name in ['Nexus 6', 'S30']:
-        adb.launch_activity('com.android.settings/.TetherSettings')
-        adb.input_tap(x="19%", y="18%")
-    else:
-        adb.launch_activity('com.android.settings/.TetherSettings')
-        adb.input_tap(x="29%", y="28%")
+    adb.launch_activity('com.android.settings/.TetherSettings')
+    adb.input_key_event('KEYCODE_DPAD_DOWN')
+    adb.input_key_event('KEYCODE_DPAD_DOWN')
+    adb.input_key_event('KEYCODE_ENTER')
 
 
 def _test_throughput(adb, download_filename):
