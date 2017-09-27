@@ -6,7 +6,8 @@ import time
 def _toggle_usb_tethering(adb):
     adb.launch_activity('com.android.settings/.TetherSettings')
     adb.input_key_event('KEYCODE_DPAD_DOWN')
-    adb.input_key_event('KEYCODE_DPAD_DOWN')
+    if adb.model_name not in ['S30']:
+        adb.input_key_event('KEYCODE_DPAD_DOWN')
     adb.input_key_event('KEYCODE_ENTER')
 
 
