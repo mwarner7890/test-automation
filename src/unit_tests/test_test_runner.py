@@ -27,24 +27,40 @@ class TestTestRunner(unittest.TestCase):
                                       'test_file_commander_version_directly'])
         self.assertEqual(error, '')
 
-    def test_cmd_line_args_throughput_test(self):
+    def test_cmd_line_args_throughput_test_all(self):
+        cmd_args = ['path', 'throughput_test', 'all']
+        test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(test_names, ['test_2g_throughput', 'test_3g_throughput',
+                                      'test_4g_throughput', 'test_wifi_throughput'])
+        self.assertEqual(error, '')
+
+    def test_cmd_line_args_specific_throughput_tests(self):
         cmd_args = ['path', 'throughput_test', '4g']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, ['test_4g_throughput'])
+        self.assertEqual(error, '')
+        cmd_args = ['path', 'throughput_test', '2g', '3g']
+        test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(test_names, ['test_2g_throughput', 'test_3g_throughput'])
+        self.assertEqual(error, '')
+        cmd_args = ['path', 'throughput_test', '2g', '3g', '4g']
+        test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(test_names, ['test_2g_throughput', 'test_3g_throughput',
+                                      'test_4g_throughput'])
         self.assertEqual(error, '')
 
     def test_cmd_line_args_throughput_test_without_network(self):
         cmd_args = ['path', 'throughput_test']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Please specify the network to test.\n'
+        self.assertEqual(error, 'Please specify the RAT or WiFi.\n'
                                 'Usage: throughput_test 2g/3g/4g/wifi')
 
     def test_cmd_line_args_throughput_test_without_args(self):
         cmd_args = ['path', 'throughput_test']
         test_names, error = tr._parse_cmd_line_args(cmd_args)
         self.assertEqual(test_names, [])
-        self.assertEqual(error, 'Please specify the network to test.\n'
+        self.assertEqual(error, 'Please specify the RAT or WiFi.\n'
                                 'Usage: throughput_test 2g/3g/4g/wifi')
 
     def test_cmd_line_args_test_only_without_tests_specified(self):
@@ -61,8 +77,9 @@ class TestTestRunner(unittest.TestCase):
         self.assertEqual(error, 'Usage:\n'
                                 'To run standard tests (single device): standard_tests\n'
                                 'To run specific standard test(s): test_only <test1> <test2>\n'
-                                'To run throughput tests (between two devices): '
-                                'throughput_test <2g/3g/4g/wifi>')
+                                'To run throughput tests (between two devices):\n'
+                                '    All throughput testing: throughput_test all\n'
+                                '    Specific RAT/Wi-Fi testing: throughput_test <2g/3g/4g/wifi>')
 
     def test_cmd_line_args_invalid_args(self):
         cmd_args = ['path', 'test_blahblahblah']
@@ -72,8 +89,21 @@ class TestTestRunner(unittest.TestCase):
                                 'Usage:\n'
                                 'To run standard tests (single device): standard_tests\n'
                                 'To run specific standard test(s): test_only <test1> <test2>\n'
-                                'To run throughput tests (between two devices): '
-                                'throughput_test <2g/3g/4g/wifi>')
+                                'To run throughput tests (between two devices):\n'
+                                '    All throughput testing: throughput_test all\n'
+                                '    Specific RAT/Wi-Fi testing: throughput_test <2g/3g/4g/wifi>')
+
+    def test_cmd_line_args_throughput_test_suite(self):
+        cmd_args = ['path', 'test_blahblahblah']
+        test_names, error = tr._parse_cmd_line_args(cmd_args)
+        self.assertEqual(test_names, [])
+        self.assertEqual(error, 'Unknown option "test_blahblahblah"\n'
+                                'Usage:\n'
+                                'To run standard tests (single device): standard_tests\n'
+                                'To run specific standard test(s): test_only <test1> <test2>\n'
+                                'To run throughput tests (between two devices):\n'
+                                '    All throughput testing: throughput_test all\n'
+                                '    Specific RAT/Wi-Fi testing: throughput_test <2g/3g/4g/wifi>')
 
 
 if __name__ == '__main__':

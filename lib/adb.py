@@ -55,8 +55,11 @@ class Adb:
     def lock_screen(self):
         self.input_key_event('KEYCODE_POWER')
 
-    def launch_activity(self, activity_name):
+    def launch_activity_component(self, activity_name):
         self.run_shell_cmd('am start -n {}'.format(activity_name))
+
+    def launch_activity_action(self, action_name):
+        self.run_shell_cmd('am start -a {}'.format(action_name))
 
     def clear_all_apps(self):  # Android 7 only!!!
         self.input_key_event('KEYCODE_APP_SWITCH')
@@ -88,6 +91,12 @@ class Adb:
         x = info[0]
         y = info[1].split(' ')[0]
         return {'x': x, 'y': y}
+
+    def device_is_qualcomm(self):
+        if self.device_name:
+            info = get_stdout_from_command('adb -s {} shell getprop'.
+                                           format(self.device_name))
+            return 'qualcomm' in info
 
 
 def get_stdout_from_command(cmd):

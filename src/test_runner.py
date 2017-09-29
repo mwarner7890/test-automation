@@ -69,7 +69,7 @@ def run_tests(**kwargs):
             print(eval_test_result(test_passed))
 
         for adb_instance in adb_instances:
-            if adb_instance:
+            if adb_instance and not running_throughput_test:
                 tear_down(adb_instance)
         test_count += 1
 
@@ -104,14 +104,16 @@ def _save_throughput_results_to_csv(results, csv_filename, device_model_name_1,
             csvwriter.writerow([result[0], result[1]])
 
 
-def _parse_cmd_line_args(args):
+def _parse_cmd_line_args(args):  # TODO: simplify this!!!
     parsed_test_names = []
     parse_error = ''
     usage_msg = 'Usage:\n' \
                 'To run standard tests (single device): standard_tests\n' \
                 'To run specific standard test(s): test_only <test1> <test2>\n' \
-                'To run throughput tests (between two devices): ' \
-                'throughput_test <2g/3g/4g/wifi>'
+                'To run throughput tests (between two devices):\n' \
+                '    All throughput testing: throughput_test all\n' \
+                '    Specific RAT/Wi-Fi testing: throughput_test <2g/3g/4g/wifi>'
+
     if len(args) == 1:
         parse_error = usage_msg
     else:
@@ -125,14 +127,21 @@ def _parse_cmd_line_args(args):
             parsed_test_names = [obj for obj in dir(standard_testing) if 'test_' in obj]
         elif args[1] == 'throughput_test':
             if len(args) < 3:
-                parse_error = 'Please specify the network to test.\n'\
+                parse_error = 'Please specify the RAT or WiFi.\n'\
                     'Usage: throughput_test 2g/3g/4g/wifi'
             else:
-                if args[2] not in ['2g', '3g', '4g', 'wifi']:
-                    parse_error = 'Please specify the network to test.\n'\
-                                  'Usage: throughput_test 2g/3g/4g/wifi'
+                if args[2] == 'all':
+                    parsed_test_names = [obj for obj in dir(throughput_testing) if 'test_' in obj]
                 else:
-                    parsed_test_names = ['test_{}_throughput'.format(args[2])]
+                    if len(args) > 3:
+                        for parsed_test_type in args[2:]:
+                            parsed_test_names.append('test_{}_throughput'.format(parsed_test_type))
+                    else:
+                        if args[2] not in ['2g', '3g', '4g', 'wifi']:
+                            parse_error = 'Please specify the RAT or WiFi.\n'\
+                                          'Usage: throughput_test 2g/3g/4g/wifi'
+                        else:
+                            parsed_test_names = ['test_{}_throughput'.format(args[2])]
         else:
             parse_error = 'Unknown option "{}"\n' \
                             '{}'.format(args[1], usage_msg)

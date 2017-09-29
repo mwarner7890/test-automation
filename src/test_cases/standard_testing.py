@@ -2,7 +2,7 @@ import adb as adb_module
 
 
 def _start_file_commander(adb):
-    adb.launch_activity('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
+    adb.launch_activity_component('com.mobisystems.fileman/com.mobisystems.files.FileBrowser')
     if 'Welcome to' in adb.get_screen_xml():
         adb.input_tap(x="36%", y="95%")
         adb.input_tap(x="36%", y="95%")
