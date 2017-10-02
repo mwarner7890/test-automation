@@ -26,8 +26,6 @@ def run_tests(**kwargs):
     passed_count = 0
     failed_count = 0
     running_throughput_test = sys.argv[1] == 'throughput_test'
-    throughput_test_results = []
-    throughput_test_name = ''
     for test_name in test_names:
         print('Running test ({}/{}): {}'.format(test_count,
                                                 num_of_tests,
@@ -45,7 +43,9 @@ def run_tests(**kwargs):
             num_of_tests -= 1
             continue
         if running_throughput_test:
-            throughput_test_name = test_names[0]
+            csv_filename = test_names[0] + '.csv'
+            _create_csv_file_for_results(csv_filename, adb_device_1.model_name,
+                                         adb_device_2.model_name)
             ftp_config_dir = os.path.expanduser('~') + '/Documents/throughput_test'
             ftp_config_fname = 'ftp_config.json'
             ftp = ThroughputFTP(ftp_config_dir, ftp_config_fname)
@@ -62,7 +62,7 @@ def run_tests(**kwargs):
                             passed_count += 1
                         temp_results.append(temp_result)
                         tear_down(adb_instance)
-                throughput_test_results.append(temp_results)
+                _add_line_to_results_csv(temp_results, csv_filename)
         else:
             set_up(adb_instances[0])
             test_passed = test_method(adb_instances[0])
@@ -83,10 +83,6 @@ def run_tests(**kwargs):
         print('{} passed'.format(passed_count))
         print('{} failed'.format(failed_count))
 
-        _save_throughput_results_to_csv(throughput_test_results,
-                                        throughput_test_name + '.csv', adb_instances[0].model_name,
-                                        adb_instances[1].model_name)
-
 
 def eval_test_result(result):
     if result:
@@ -94,8 +90,8 @@ def eval_test_result(result):
     return 'Test failed'
 
 
-def _save_throughput_results_to_csv(results, csv_filename, device_model_name_1,
-                                    device_model_name_2):
+def _create_csv_file_for_results(csv_filename, device_model_name_1,
+                                 device_model_name_2):
     results_dir = os.path.join(os.path.expanduser('~'), 'Documents', 'throughput_test',
                                'results')
     if not os.path.isdir(results_dir):
@@ -105,8 +101,16 @@ def _save_throughput_results_to_csv(results, csv_filename, device_model_name_1,
               newline="\n", encoding="utf-8") as csvfile:
         csvwriter = csv.writer(csvfile, delimiter=',')
         csvwriter.writerow([device_model_name_1, device_model_name_2])
-        for result in results:
-            csvwriter.writerow([result[0], result[1]])
+
+
+def _add_line_to_results_csv(results_line, csv_filename):
+    results_dir = os.path.join(os.path.expanduser('~'), 'Documents', 'throughput_test',
+                               'results')
+
+    with open(os.path.join(results_dir, csv_filename), 'a',
+              newline="\n", encoding="utf-8") as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',')
+        csvwriter.writerow([results_line[0], results_line[1]])
 
 
 def _parse_cmd_line_args(args):  # TODO: simplify this!!!
