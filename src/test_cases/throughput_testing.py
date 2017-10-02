@@ -16,7 +16,7 @@ def _toggle_usb_tethering(adb):
 
 
 def _set_rat(adb, rat):
-    if adb.device_is_qualcomm():
+    if adb.device_is_qualcomm() and adb.model_name != 'S30':
         mb_net_settings_activity_name = 'com.qualcomm.qti.networksetting/' \
                                         'com.qualcomm.qti.networksetting.MobileNetworkSettings'
     else:
@@ -50,8 +50,12 @@ def _get_menu_entry_count_for_rat(rat):
 
 def _toggle_wifi(adb):
     adb.launch_activity_action('android.settings.WIFI_SETTINGS')
-    adb.input_key_event('KEYCODE_DPAD_DOWN')
-    adb.input_key_event('KEYCODE_ENTER')
+
+    if adb.model_name == 'S30':
+        adb.input_tap(x=470, y=130)
+    else:
+        adb.input_key_event('KEYCODE_DPAD_DOWN')
+        adb.input_key_event('KEYCODE_ENTER')
     adb.clear_most_recent_app()
 
 
