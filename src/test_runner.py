@@ -55,7 +55,12 @@ def run_tests(**kwargs):
                     if adb_instance:
                         set_up(adb_instance)
                         adb_instance.ftp = ftp
-                        temp_results.append(test_method(adb_instance))
+                        temp_result = test_method(adb_instance)
+                        if temp_result == 'Fail':
+                            failed_count += 1
+                        else:
+                            passed_count += 1
+                        temp_results.append(temp_result)
                         tear_down(adb_instance)
                 throughput_test_results.append(temp_results)
         else:

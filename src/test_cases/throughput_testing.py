@@ -75,12 +75,16 @@ def _time_download(adb, download_filename):
             _toggle_usb_tethering(adb)
             return time_taken
         except socket.gaierror:
-            print('Error: Could not connect to FTP server. Retrying connection...',
+            print('Error: Could not connect to FTP server. Marking as fail...',
                   file=sys.stderr)
-            time.sleep(adb.ftp.retry_timer)
+            adb.unlock_screen_with_pin()
+            _toggle_usb_tethering(adb)
+            return 'Fail'
         except (socket.timeout, TimeoutError):
-            print('Error: Connection timed-out. Retrying download in {} seconds...'
-                  .format(adb.ftp.retry_timer), file=sys.stderr)
+            print('Error: Connection timed-out. Marking as fail...', file=sys.stderr)
+            adb.unlock_screen_with_pin()
+            _toggle_usb_tethering(adb)
+            return 'Fail'
 
 
 def test_2g_throughput(adb):

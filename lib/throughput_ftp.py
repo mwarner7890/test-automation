@@ -20,7 +20,6 @@ class ThroughputFTP:
         self.wifi_download_filename = ftp_config['wifi_download_filename']
         self.test_count = int(ftp_config['test_count'])
         self.download_timeout = int(ftp_config['download_timeout'])
-        self.retry_timer = int(ftp_config['retry_timer'])
 
     def login_and_download_file_from_ftp(self, filename):
         with FTP(self.address, timeout=self.download_timeout) as ftp:
@@ -54,7 +53,6 @@ def _create_default_config(ftp_config_dir, ftp_config_fullpath):
             'wifi_download_filename': 'WiFi-Data_Test.zip',
             'test_count': '10',
             'download_timeout': '60',
-            'retry_timer': '8'
         }, indent=4))
 
         print('An FTP configuration file has been placed in Documents/throughput_test\n'
