@@ -25,6 +25,15 @@ class Adb:
 
     def input_key_event(self, keyevent):
         self.run_shell_cmd('input keyevent {}'.format(keyevent))
+
+    def input_key_event_sequence(self, key_event_sequence):
+        self.run_shell_cmd('input keyevent {}'.format(' '.join(key_event_sequence)))
+
+    def repeat_input_key_event(self, keyevent, count):
+        key_event_sequence = []
+        for _ in range(0, count):
+            key_event_sequence.append(keyevent)
+        self.input_key_event_sequence(key_event_sequence)
     
     def input_tap(self, **kwargs):
         self._convert_relative_coords_if_used(kwargs)

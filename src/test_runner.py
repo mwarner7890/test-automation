@@ -14,8 +14,8 @@ def set_up(adb_instance):
 
 
 def tear_down(adb_instance):
-    adb_instance.input_key_event('KEYCODE_HOME')
-    adb_instance.input_key_event('KEYCODE_POWER')
+    adb_instance.input_key_event_sequence(['KEYCODE_HOME',
+                                          'KEYCODE_POWER'])
 
 
 def run_tests(**kwargs):

@@ -5,13 +5,15 @@ import time
 
 def _toggle_usb_tethering(adb):
     adb.launch_activity_component('com.android.settings/.TetherSettings')
-    adb.input_key_event('KEYCODE_DPAD_UP')
-    adb.input_key_event('KEYCODE_DPAD_UP')
-    adb.input_key_event('KEYCODE_DPAD_UP')
+    key_event_tmp = ['KEYCODE_DPAD_UP',
+                     'KEYCODE_DPAD_UP',
+                     'KEYCODE_DPAD_UP']
+
     if adb.model_name not in ['S30']:
-        adb.input_key_event('KEYCODE_DPAD_DOWN')
-    adb.input_key_event('KEYCODE_ENTER')
-    time.sleep(8)
+        key_event_tmp.append('KEYCODE_DPAD_DOWN')
+    key_event_tmp.append('KEYCODE_ENTER')
+    adb.input_key_event_sequence(key_event_tmp)
+    time.sleep(5)
     adb.clear_most_recent_app()
 
 
@@ -24,16 +26,13 @@ def _set_rat(adb, rat):
                                         'com.android.phone.MobileNetworkSettings'
 
     adb.launch_activity_component(mb_net_settings_activity_name)
-    adb.input_key_event('KEYCODE_DPAD_DOWN')
-    adb.input_key_event('KEYCODE_DPAD_DOWN')
-    adb.input_key_event('KEYCODE_ENTER')
+    adb.input_key_event_sequence(['KEYCODE_DPAD_DOWN',
+                                 'KEYCODE_DPAD_DOWN', 'KEYCODE_ENTER',
+                                  'KEYCODE_DPAD_UP', 'KEYCODE_DPAD_UP',
+                                  'KEYCODE_DPAD_UP'])
 
-    adb.input_key_event('KEYCODE_DPAD_UP')
-    adb.input_key_event('KEYCODE_DPAD_UP')
-    adb.input_key_event('KEYCODE_DPAD_UP')
-
-    for _ in range(0, _get_menu_entry_count_for_rat(rat)):
-        adb.input_key_event('KEYCODE_DPAD_DOWN')
+    adb.repeat_input_key_event('KEYCODE_DPAD_DOWN',
+                               _get_menu_entry_count_for_rat(rat))
     adb.input_key_event('KEYCODE_ENTER')
 
     adb.clear_most_recent_app()
@@ -54,8 +53,8 @@ def _toggle_wifi(adb):
     if adb.model_name == 'S30':
         adb.input_tap(x=470, y=130)
     else:
-        adb.input_key_event('KEYCODE_DPAD_DOWN')
-        adb.input_key_event('KEYCODE_ENTER')
+        adb.input_key_event_sequence(['KEYCODE_DPAD_DOWN',
+                                     'KEYCODE_ENTER'])
     adb.clear_most_recent_app()
 
 
