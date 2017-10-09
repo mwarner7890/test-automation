@@ -8,6 +8,7 @@ class Adb:
         self.device_name = kwargs.get('device_name')
         self.model_name = kwargs.get('model_name')
         self.screen_res = self.get_screen_resolution()
+        self.prop = self._get_prop()
         self._call_silently(['adb', 'wait-for-device'])
 
     @staticmethod
@@ -106,6 +107,27 @@ class Adb:
             info = get_stdout_from_command('adb -s {} shell getprop'.
                                            format(self.device_name))
             return 'qualcomm' in info
+
+    def _get_prop(self):
+        getprop = get_stdout_from_command('adb -s {} shell getprop'.
+                                          format(self.device_name))
+        getprop = getprop.replace('\n    ', '').replace('\n', '').replace(']', '').replace(': ', '').split('[')[1:]
+        return _list_to_dict(getprop)
+
+    def get_imei(self):
+        imei_raw = get_stdout_from_command('adb -s {} shell service call '
+                                           'iphonesubinfo 1'.format(self.device_name))
+        imei = ''
+        for imei_part in imei_raw.split('\'')[1::2]:
+            imei += imei_part.replace('.', '').replace(' ', '')
+        return imei
+
+
+def _list_to_dict(input_list):
+    return_dict = {}
+    for key, elem in zip(input_list[::2], input_list[1::2]):
+        return_dict[key] = elem
+    return return_dict
 
 
 def get_stdout_from_command(cmd):
