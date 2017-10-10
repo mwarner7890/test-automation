@@ -1,6 +1,7 @@
 import socket
 import sys
 import time
+from timestamp_print import ts_print
 
 
 def _toggle_usb_tethering(adb):
@@ -64,12 +65,12 @@ def _time_download(adb, download_filename):
     adb.lock_screen()
     while True:
         try:
-            print('Downloading {}/{} through device {}'.
-                  format(adb.ftp.download_dir, download_filename, adb.model_name))
+            ts_print('Downloading {}/{} through device {}:'.
+                     format(adb.ftp.download_dir, download_filename, adb.model_name))
             time_started = time.time()
             adb.ftp.login_and_download_file_from_ftp(download_filename)
             time_taken = round(time.time() - time_started)
-            print('Download complete; time taken: {} seconds'.format(time_taken))
+            ts_print('Download complete; time taken: {} seconds'.format(time_taken))
             adb.unlock_screen_with_pin()
             _toggle_usb_tethering(adb)
             return time_taken

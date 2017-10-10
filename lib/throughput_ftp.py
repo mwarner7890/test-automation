@@ -1,12 +1,18 @@
 import json
 import os
+import sys
 import tempfile
 from ftplib import FTP
+from timestamp_print import ts_print
 
 
 class ThroughputFTP:
     def __init__(self, ftp_config_dir, ftp_config_fname):
         self._load_ftp_config(ftp_config_dir, ftp_config_fname)
+        self.tfile = None
+        self.current_download_byte_count = 0
+        self.current_download_file_size = 0
+        self.current_download_file_name = ''
 
     def _load_ftp_config(self, ftp_config_dir, ftp_config_fname):
         ftp_config = _load_ftp_config_from_json(ftp_config_dir, ftp_config_fname)
@@ -21,12 +27,32 @@ class ThroughputFTP:
         self.test_count = int(ftp_config['test_count'])
         self.download_timeout = int(ftp_config['download_timeout'])
 
+    @staticmethod
+    def _print_download_progress_bar(percentage):
+        progress_count = int(percentage / 2)
+        sys.stdout.write('\r[')
+        sys.stdout.write('#' * progress_count)
+        sys.stdout.write('-' * (50 - progress_count))
+        sys.stdout.write('] {}%'.format(percentage))
+        sys.stdout.flush()
+
+    def _download_callback(self, data):
+        self.tfile.write(data)
+        self.current_download_byte_count += len(data)
+        self._print_download_progress_bar(int((self.current_download_byte_count /
+                                               self.current_download_file_size) * 100))
+
     def login_and_download_file_from_ftp(self, filename):
+        self.current_download_file_name = filename
         with FTP(self.address, timeout=self.download_timeout) as ftp:
             ftp.login(user=self.username, passwd=self.password)
             ftp.cwd(self.download_dir)
-            with tempfile.TemporaryFile() as tfile:
-                ftp.retrbinary('RETR {}'.format(filename), tfile.write)
+            self.current_download_file_size = ftp.size(self.current_download_file_name)
+            with tempfile.TemporaryFile() as self.tfile:
+                ftp.retrbinary('RETR {}'.format(self.current_download_file_name), self._download_callback)
+            print()
+            self.current_download_byte_count = 0
+            self.current_download_file_size = 0
 
 
 def _load_ftp_config_from_json(ftp_config_dir, ftp_config_fname):
@@ -55,8 +81,8 @@ def _create_default_config(ftp_config_dir, ftp_config_fullpath):
             'download_timeout': '60',
         }, indent=4))
 
-        print('An FTP configuration file has been placed in Documents/throughput_test\n'
-              'Please edit this file with the desired settings and run the test runner again.')
+        ts_print('An FTP configuration file has been placed in Documents/throughput_test\n'
+                 'Please edit this file with the desired settings and run the test runner again.')
 
 
 def _load_json_file(fpath):

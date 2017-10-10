@@ -9,6 +9,7 @@ import sys
 from openpyxl import load_workbook
 from openpyxl.chart import BarChart, Reference
 from throughput_ftp import ThroughputFTP
+from timestamp_print import ts_print
 
 
 def set_up(adb_instance):
@@ -18,7 +19,7 @@ def set_up(adb_instance):
 
 def tear_down(adb_instance):
     adb_instance.input_key_event_sequence(['KEYCODE_HOME',
-                                          'KEYCODE_POWER'])
+                                           'KEYCODE_POWER'])
 
 
 def run_tests(**kwargs):
@@ -32,16 +33,16 @@ def run_tests(**kwargs):
     results_dir = os.path.join(os.path.expanduser('~'), 'Documents', 'throughput_test',
                                'results')
     for test_name in test_names:
-        print('Running test ({}/{}): {}'.format(test_count,
-                                                num_of_tests,
-                                                test_name))
+        ts_print('Running test ({}/{}): {}'.format(test_count,
+                                                   num_of_tests,
+                                                   test_name))
         try:
             if running_throughput_test:
                 test_method = getattr(throughput_testing, test_name)
             else:
                 test_method = getattr(standard_testing, test_name)
         except AttributeError:
-            print('Error: No test case named {}'.format(test_name))
+            ts_print('Error: No test case named {}'.format(test_name))
             for adb_instance in adb_instances:
                 if adb_instance:
                     tear_down(adb_instance)
@@ -83,7 +84,7 @@ def run_tests(**kwargs):
                 passed_count += 1
             else:
                 failed_count += 1
-            print(eval_test_result(test_passed))
+            ts_print(eval_test_result(test_passed))
 
         for adb_instance in adb_instances:
             if adb_instance and not running_throughput_test:
@@ -91,9 +92,9 @@ def run_tests(**kwargs):
         test_count += 1
 
     if running_throughput_test:
-        print('Finished running {} tests(s):'.format(num_of_tests))
-        print('{} passed'.format(passed_count))
-        print('{} failed'.format(failed_count))
+        ts_print('Finished running {} tests(s):'.format(num_of_tests))
+        ts_print('{} passed'.format(passed_count))
+        ts_print('{} failed'.format(failed_count))
 
 
 def eval_test_result(result):
@@ -164,99 +165,99 @@ def _save_results_to_xlsx(results_dir, xlsx_filename, results, test_type,
                 'results_cell_range': ('B2', 'C12'),
                 'result_chart_position': 'T2',
                 'device_info_cells':
-                [
-                    {
-                        'sim_operator_cell': 'B15',
-                        'build_cell': 'B16',
-                        'sw_version_cell': 'B17',
-                        'android_version_cell': 'B18',
-                        'manufacturer_cell': 'B19',
-                        'imei_cell': 'B20',
-                        'result_chart_position': 'K2'
-                    },
-                    {
-                        'sim_operator_cell': 'C15',
-                        'build_cell':  'C16',
-                        'sw_version_cell': 'C17',
-                        'android_version_cell': 'C18',
-                        'manufacturer_cell': 'C19',
-                        'imei_cell': 'C20'
-                    }
-                ]
+                    [
+                        {
+                            'sim_operator_cell': 'B15',
+                            'build_cell': 'B16',
+                            'sw_version_cell': 'B17',
+                            'android_version_cell': 'B18',
+                            'manufacturer_cell': 'B19',
+                            'imei_cell': 'B20',
+                            'result_chart_position': 'K2'
+                        },
+                        {
+                            'sim_operator_cell': 'C15',
+                            'build_cell': 'C16',
+                            'sw_version_cell': 'C17',
+                            'android_version_cell': 'C18',
+                            'manufacturer_cell': 'C19',
+                            'imei_cell': 'C20'
+                        }
+                    ]
             },
         '3g':
             {
                 'results_cell_range': ('E2', 'F12'),
                 'result_chart_position': 'T21',
                 'device_info_cells':
-                [
-                    {
-                        'sim_operator_cell': 'E15',
-                        'build_cell':  'E16',
-                        'sw_version_cell': 'E17',
-                        'android_version_cell': 'E18',
-                        'manufacturer_cell': 'E19',
-                        'imei_cell': 'E20',
-                        'result_chart_position': 'K21'
-                    },
-                    {
-                        'sim_operator_cell': 'F14',
-                        'build_cell': 'F15',
-                        'sw_version_cell': 'F17',
-                        'android_version_cell': 'F18',
-                        'manufacturer_cell': 'F19',
-                        'imei_cell': 'F20'
-                    }
-                ]
+                    [
+                        {
+                            'sim_operator_cell': 'E15',
+                            'build_cell': 'E16',
+                            'sw_version_cell': 'E17',
+                            'android_version_cell': 'E18',
+                            'manufacturer_cell': 'E19',
+                            'imei_cell': 'E20',
+                            'result_chart_position': 'K21'
+                        },
+                        {
+                            'sim_operator_cell': 'F14',
+                            'build_cell': 'F15',
+                            'sw_version_cell': 'F17',
+                            'android_version_cell': 'F18',
+                            'manufacturer_cell': 'F19',
+                            'imei_cell': 'F20'
+                        }
+                    ]
             },
         '4g':
             {
                 'results_cell_range': ('H2', 'I12'),
                 'result_chart_position': 'T33',
                 'device_info_cells':
-                [
-                    {
-                        'sim_operator_cell': 'H15',
-                        'build_cell': 'H16',
-                        'sw_version_cell': 'H17',
-                        'android_version_cell': 'H18',
-                        'manufacturer_cell': 'H19',
-                        'imei_cell': 'H20',
-                        'result_chart_position': 'K33'
-                    },
-                    {
-                        'sim_operator_cell': 'I15',
-                        'build_cell': 'I16',
-                        'sw_version_cell': 'I17',
-                        'android_version_cell': 'I18',
-                        'manufacturer_cell': 'I19',
-                        'imei_cell': 'I20'
-                    }
-                ]
+                    [
+                        {
+                            'sim_operator_cell': 'H15',
+                            'build_cell': 'H16',
+                            'sw_version_cell': 'H17',
+                            'android_version_cell': 'H18',
+                            'manufacturer_cell': 'H19',
+                            'imei_cell': 'H20',
+                            'result_chart_position': 'K33'
+                        },
+                        {
+                            'sim_operator_cell': 'I15',
+                            'build_cell': 'I16',
+                            'sw_version_cell': 'I17',
+                            'android_version_cell': 'I18',
+                            'manufacturer_cell': 'I19',
+                            'imei_cell': 'I20'
+                        }
+                    ]
             },
         'wifi':
             {
                 'results_cell_range': ('B22', 'C32'),
                 'result_chart_position': 'K52',
                 'device_info_cells':
-                [
-                    {
-                        'sim_operator_cell': 'B35',
-                        'build_cell': 'B36',
-                        'sw_version_cell': 'B37',
-                        'android_version_cell': 'B38',
-                        'manufacturer_cell': 'B39',
-                        'imei_cell': 'B40'
-                    },
-                    {
-                        'sim_operator_cell': 'C35',
-                        'build_cell': 'C36',
-                        'sw_version_cell': 'C37',
-                        'android_version_cell': 'C38',
-                        'manufacturer_cell': 'C39',
-                        'imei_cell': 'C40'
-                    }
-                ]
+                    [
+                        {
+                            'sim_operator_cell': 'B35',
+                            'build_cell': 'B36',
+                            'sw_version_cell': 'B37',
+                            'android_version_cell': 'B38',
+                            'manufacturer_cell': 'B39',
+                            'imei_cell': 'B40'
+                        },
+                        {
+                            'sim_operator_cell': 'C35',
+                            'build_cell': 'C36',
+                            'sw_version_cell': 'C37',
+                            'android_version_cell': 'C38',
+                            'manufacturer_cell': 'C39',
+                            'imei_cell': 'C40'
+                        }
+                    ]
             }
     }
 
@@ -265,7 +266,8 @@ def _save_results_to_xlsx(results_dir, xlsx_filename, results, test_type,
 
     cells = []
     for cell_tuple in \
-            results_worksheet[spreadsheet_cell_addresses[test_type]['results_cell_range'][0]:spreadsheet_cell_addresses[test_type]['results_cell_range'][1]]:
+            results_worksheet[spreadsheet_cell_addresses[test_type]['results_cell_range'][0]:
+            spreadsheet_cell_addresses[test_type]['results_cell_range'][1]]:
         for cell in cell_tuple:
             cells.append(cell)
 
@@ -315,8 +317,8 @@ def _parse_cmd_line_args(args):  # TODO: simplify this!!!
             parsed_test_names = [obj for obj in dir(standard_testing) if 'test_' in obj]
         elif args[1] == 'throughput_test':
             if len(args) < 3:
-                parse_error = 'Please specify the RAT or WiFi.\n'\
-                    'Usage: throughput_test 2g/3g/4g/wifi'
+                parse_error = 'Please specify the RAT or WiFi.\n' \
+                              'Usage: throughput_test 2g/3g/4g/wifi'
             else:
                 if args[2] == 'all':
                     parsed_test_names = [obj for obj in dir(throughput_testing) if 'test_' in obj]
@@ -326,13 +328,13 @@ def _parse_cmd_line_args(args):  # TODO: simplify this!!!
                             parsed_test_names.append('test_{}_throughput'.format(parsed_test_type))
                     else:
                         if args[2] not in ['2g', '3g', '4g', 'wifi']:
-                            parse_error = 'Please specify the RAT or WiFi.\n'\
+                            parse_error = 'Please specify the RAT or WiFi.\n' \
                                           'Usage: throughput_test 2g/3g/4g/wifi'
                         else:
                             parsed_test_names = ['test_{}_throughput'.format(args[2])]
         else:
             parse_error = 'Unknown option "{}"\n' \
-                            '{}'.format(args[1], usage_msg)
+                          '{}'.format(args[1], usage_msg)
 
     return parsed_test_names, parse_error
 
@@ -360,7 +362,7 @@ def _strip_r_n_and_remove_comma(string):
 if __name__ == '__main__':
     test_names, error = _parse_cmd_line_args(sys.argv)
     if error:
-        print(error)
+        ts_print(error)
     else:
         if 'throughput' in test_names[0]:
             try:
@@ -374,7 +376,7 @@ if __name__ == '__main__':
                 print('Please connect two devices for throughput testing',
                       file=sys.stderr)
             except KeyboardInterrupt:
-                print('Stopping setup... (interrupted by user)')
+                ts_print('Stopping setup... (interrupted by user)')
 
         else:
             try:
@@ -383,4 +385,4 @@ if __name__ == '__main__':
                 print('Please connect one device for standard tests',
                       file=sys.stderr)
             except KeyboardInterrupt:
-                print('Stopping tests... (interrupted by user)')
+                ts_print('Stopping tests... (interrupted by user)')
