@@ -92,9 +92,7 @@ def run_tests(**kwargs):
         test_count += 1
 
     if running_throughput_test:
-        ts_print('Finished running {} tests(s):'.format(num_of_tests))
-        ts_print('{} passed'.format(passed_count))
-        ts_print('{} failed'.format(failed_count))
+        ts_print('Finished running {} tests(s)'.format(num_of_tests))
 
 
 def eval_test_result(result):
@@ -340,13 +338,13 @@ def _parse_cmd_line_args(args):  # TODO: simplify this!!!
 
 
 def _get_device_names():
-    raw_output = adb_module.get_stdout_from_command('adb devices')
+    raw_output = adb_module.get_stdout_from_adb_command('devices', adb_exe_path)
     return raw_output.replace('\\tdevice', '').split('\\r\\n')[1:][:-2]
 
 
 def _get_device_model_name(device_name):
-    model_name = adb_module.get_stdout_from_command(
-        'adb -s {} shell getprop ro.product.model'.format(device_name))
+    model_name = adb_module.get_stdout_from_adb_command(
+        '-s {} shell getprop ro.product.model'.format(device_name), adb_exe_path)
     return model_name.replace('b\'', '').replace('\\r', '').replace('\\n', '')[:-1]
 
 
@@ -359,28 +357,47 @@ def _strip_r_n_and_remove_comma(string):
     return ''
 
 
+def _get_adb_exe_location():
+    parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    return os.path.join(parent_dir, 'platform-tools', 'adb.exe')
+
+
 if __name__ == '__main__':
     test_names, error = _parse_cmd_line_args(sys.argv)
+    adb_exe_path = _get_adb_exe_location()
+
     if error:
         ts_print(error)
     else:
         if 'throughput' in test_names[0]:
             try:
                 device_name_1, device_name_2 = _get_device_names()
+                if 'unauthorized' in str([device_name_1, device_name_2]):
+                    print('Error: one or more devices are not authorized',
+                          file=sys.stderr)
+                    exit(1)
                 adb_device_1 = adb_module.Adb(device_name=device_name_1,
-                                              model_name=_get_device_model_name(device_name_1))
+                                              model_name=_get_device_model_name(device_name_1),
+                                              adb_exe_path=adb_exe_path)
                 adb_device_2 = adb_module.Adb(device_name=device_name_2,
-                                              model_name=_get_device_model_name(device_name_2))
+                                              model_name=_get_device_model_name(device_name_2),
+                                              adb_exe_path=adb_exe_path)
                 run_tests(adb_device_1=adb_device_1, adb_device_2=adb_device_2)
-            except ValueError:
-                print('Please connect two devices for throughput testing',
-                      file=sys.stderr)
+            except ValueError as e:
+                if 'not enough values to unpack' in str(e):
+                    print('Please connect two devices for throughput testing',
+                          file=sys.stderr)
             except KeyboardInterrupt:
                 ts_print('Stopping setup... (interrupted by user)')
-
         else:
             try:
-                run_tests(adb_device_1=adb_module.Adb())
+                adb_device = adb_module.Adb(adb_exe_path=adb_exe_path)
+                adb_device_name = adb_device.device_name  # For checking auth
+                if adb_device_name and 'unauthorized' in adb_device_name:
+                    print('Error: Device is not authorized',
+                          file=sys.stderr)
+                    exit(1)
+                run_tests(adb_device_1=adb_device)
             except subprocess.CalledProcessError:
                 print('Please connect one device for standard tests',
                       file=sys.stderr)

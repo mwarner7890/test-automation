@@ -5,11 +5,11 @@ from unittest.mock import MagicMock
 
 class TestAdbGetDeviceProp(unittest.TestCase):
     def setUp(self):
-        adb.Adb._call_silently = MagicMock(return_value=None)
+        adb.Adb._call_adb_cmd_silently = MagicMock(return_value=None)
         adb.Adb.get_screen_resolution = MagicMock(return_value=None)
 
     def test_get_device_prop(self):
-        adb.get_stdout_from_command = MagicMock(return_value="""
+        adb.get_stdout_from_adb_command = MagicMock(return_value="""
     [af.music.outputid]: [3]
     [bgw.current3gband]: [0]
     [camera.disable_zsl_mode]: [1]
@@ -581,7 +581,7 @@ class TestAdbGetDeviceProp(unittest.TestCase):
         self.assertEqual(getprop_output['wlan.wfd.security.image'], '1')
 
     def test_get_imei(self):
-        adb.get_stdout_from_command = MagicMock(return_value="""
+        adb.get_stdout_from_adb_command = MagicMock(return_value="""
 Result: Parcel(
   0x00000000: 00000000 0000000f 00350033 00380037 '........3.5.7.8.'
   0x00000010: 00360037 00380030 00300030 00370030 '7.6.0.8.0.0.0.7.'
@@ -590,7 +590,7 @@ Result: Parcel(
 
         self.assertEqual(adb.Adb().get_imei(), '357876080007448')
 
-        adb.get_stdout_from_command = MagicMock(return_value="""Result: 
+        adb.get_stdout_from_adb_command = MagicMock(return_value="""Result: 
         Parcel(\r\n  0x00000000: 00000000 0000000f 00350033 00380037 '........3.5.7.8.'\r\n  
         0x00000010: 00360037 00380030 00300030 00370030 '7.6.0.8.0.0.0.7.'\r\n  
         0x00000020: 00340034 00000038                   '4.4.8...        ')\r\n""")

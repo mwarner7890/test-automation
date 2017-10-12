@@ -26,6 +26,6 @@ def test_file_commander_version(adb):
 
 
 def test_file_commander_version_directly(adb):
-    dump = adb_module.get_stdout_from_command(
-        'adb shell dumpsys package com.mobisystems.fileman')
+    dump = adb_module.get_stdout_from_adb_command(
+        'shell dumpsys package com.mobisystems.fileman', adb.adb_exe_path)
     return '3.9.14746' in dump
