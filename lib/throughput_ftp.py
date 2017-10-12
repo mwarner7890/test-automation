@@ -61,7 +61,7 @@ def _load_ftp_config_from_json(ftp_config_dir, ftp_config_fname):
         return _load_json_file(ftp_config_fullpath)
     _create_default_config(ftp_config_dir, ftp_config_fullpath)
 
-    exit(1)
+    sys.exit(1)
 
 
 def _create_default_config(ftp_config_dir, ftp_config_fullpath):

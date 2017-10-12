@@ -375,7 +375,7 @@ if __name__ == '__main__':
                 if 'unauthorized' in str([device_name_1, device_name_2]):
                     print('Error: one or more devices are not authorized',
                           file=sys.stderr)
-                    exit(1)
+                    sys.exit(1)
                 adb_device_1 = adb_module.Adb(device_name=device_name_1,
                                               model_name=_get_device_model_name(device_name_1),
                                               adb_exe_path=adb_exe_path)
@@ -396,7 +396,7 @@ if __name__ == '__main__':
                 if adb_device_name and 'unauthorized' in adb_device_name:
                     print('Error: Device is not authorized',
                           file=sys.stderr)
-                    exit(1)
+                    sys.exit(1)
                 run_tests(adb_device_1=adb_device)
             except subprocess.CalledProcessError:
                 print('Please connect one device for standard tests',
