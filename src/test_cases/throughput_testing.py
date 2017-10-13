@@ -81,9 +81,10 @@ def _time_download(adb, download_filename):
             _toggle_usb_tethering(adb)
             return 'Fail'
         except (socket.timeout, TimeoutError):
-            print('Error: Connection timed-out. Marking as fail...', file=sys.stderr)
+            print('\nError: Connection timed-out. Marking as fail...', file=sys.stderr)
             adb.unlock_screen_with_pin()
             _toggle_usb_tethering(adb)
+            adb.ftp.current_download_byte_count = 0
             return 'Fail'
 
 
