@@ -358,9 +358,13 @@ def _strip_r_n_and_remove_comma(string):
 
 
 def _get_adb_exe_location():
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    parent_dir = os.path.abspath(os.path.join(script_dir, os.pardir))
-    return os.path.join(parent_dir, 'platform-tools', 'adb.exe')
+    try:
+        script_dir = os.path.dirname(sys._MEIPASS)
+        return os.path.join(script_dir, 'platform-tools', 'adb.exe')
+    except AttributeError:  # Software is not compiled (frozen)
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+        parent_dir = os.path.abspath(os.path.join(script_dir, os.pardir))
+        return os.path.join(parent_dir, 'platform-tools', 'adb.exe')
 
 
 if __name__ == '__main__':
