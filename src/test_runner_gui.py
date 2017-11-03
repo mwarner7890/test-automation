@@ -1,6 +1,4 @@
-import standard_testing
 import test_runner
-import throughput_testing
 from tkinter import *
 
 
@@ -10,27 +8,27 @@ class TestRunnerGui:
         self.master.resizable(False, False)
         self.master.title('Test Runner')
 
-        self.test_classes = {
+        self.test_suite_module_name_dict = {
             'Throughput tests': 'throughput_testing',
             'Standard tests': 'standard_testing'
         }
 
         test_suites_frame = Frame(self.master)
-        test_suits_list_label = Label(test_suites_frame, text='Test Suites')
+        test_suites_list_label = Label(test_suites_frame, text='Test Suites')
         self.test_suites_list = Listbox(test_suites_frame)
-        test_suits_list_label.pack()
+        test_suites_list_label.pack()
         self.test_suites_list.pack()
         test_suites_frame.grid(row=0, column=0)
-        for test_suite_name in self.test_classes:
+        for test_suite_name in self.test_suite_module_name_dict:
             self.test_suites_list.insert(END, test_suite_name)
         self.test_suites_list.bind('<<ListboxSelect>>', self.update_test_case_list)
 
-        scheduled_test_suites_frame = Frame(self.master)
-        scheduled_test_suits_list_label = Label(scheduled_test_suites_frame, text='All Test Cases')
-        scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
-        scheduled_test_suits_list_label.pack()
-        scheduled_test_suites_list.pack()
-        scheduled_test_suites_frame.grid(row=0, column=1)
+        all_test_suites_frame = Frame(self.master)
+        all_test_suits_list_label = Label(all_test_suites_frame, text='All Test Cases')
+        self.all_test_suites_list = Listbox(all_test_suites_frame)
+        all_test_suits_list_label.pack()
+        self.all_test_suites_list.pack()
+        all_test_suites_frame.grid(row=0, column=1)
 
         test_select_btn_frame = Frame(self.master)
         test_select_btn_select = Button(test_select_btn_frame, text=' > ')
@@ -73,8 +71,11 @@ class TestRunnerGui:
     def update_test_case_list(self, event):
         widget = event.widget
         selected_test_suite = self.test_suites_list.get(widget.curselection())
-        print(selected_test_suite)
-
+        test_suite_module_name = self.test_suite_module_name_dict.get(selected_test_suite)
+        test_suite_module = __import__(test_suite_module_name)
+        self.all_test_suites_list.delete(0, END)
+        for test_name in test_runner.get_all_test_names_in_suite(test_suite_module):
+            self.all_test_suites_list.insert(END, test_name)
 
 
 root = Tk()
