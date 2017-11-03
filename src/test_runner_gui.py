@@ -1,3 +1,6 @@
+import standard_testing
+import test_runner
+import throughput_testing
 from tkinter import *
 
 
@@ -7,12 +10,20 @@ class TestRunnerGui:
         self.master.resizable(False, False)
         self.master.title('Test Runner')
 
+        self.test_classes = {
+            'Throughput tests': 'throughput_testing',
+            'Standard tests': 'standard_testing'
+        }
+
         test_suites_frame = Frame(self.master)
         test_suits_list_label = Label(test_suites_frame, text='Test Suites')
-        test_suites_list = Listbox(test_suites_frame)
+        self.test_suites_list = Listbox(test_suites_frame)
         test_suits_list_label.pack()
-        test_suites_list.pack()
+        self.test_suites_list.pack()
         test_suites_frame.grid(row=0, column=0)
+        for test_suite_name in self.test_classes:
+            self.test_suites_list.insert(END, test_suite_name)
+        self.test_suites_list.bind('<<ListboxSelect>>', self.update_test_case_list)
 
         scheduled_test_suites_frame = Frame(self.master)
         scheduled_test_suits_list_label = Label(scheduled_test_suites_frame, text='All Test Cases')
@@ -42,6 +53,8 @@ class TestRunnerGui:
         test_run_stop_btn_frame = Frame(self.master)
         test_run_btn = Button(test_run_stop_btn_frame, text='    \n  Run  \n    ')
         test_stop_btn = Button(test_run_stop_btn_frame, text='    \n  Stop  \n    ')
+        test_run_btn.config(state=DISABLED)
+        test_stop_btn.config(state=DISABLED)
         test_run_btn.pack()
         test_stop_btn.pack()
         test_run_stop_btn_frame.grid(row=0, column=5)
@@ -53,8 +66,15 @@ class TestRunnerGui:
         output_scrollbar.grid(row=6, column=6, sticky='NS')
         test_output_text = Text(self.master, wrap=WORD, yscrollcommand=output_scrollbar)
         test_output_text.grid(row=6, column=0, columnspan=6)
-        test_output_text.config(yscrollcommand=output_scrollbar.set)
+        test_output_text.config(yscrollcommand=output_scrollbar.set,
+                                state=DISABLED)
         output_scrollbar.config(command=test_output_text.yview)
+
+    def update_test_case_list(self, event):
+        widget = event.widget
+        selected_test_suite = self.test_suites_list.get(widget.curselection())
+        print(selected_test_suite)
+
 
 
 root = Tk()

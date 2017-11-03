@@ -22,6 +22,10 @@ def tear_down(adb_instance):
                                            'KEYCODE_POWER'])
 
 
+def get_all_test_names_in_suite(test_suite_class):
+    return [obj for obj in dir(test_suite_class) if 'test_' in obj]
+
+
 def run_tests(**kwargs):
     adb_instances = [kwargs.get('adb_device_1'),
                      kwargs.get('adb_device_2')]
@@ -312,14 +316,14 @@ def _parse_cmd_line_args(args):  # TODO: simplify this!!!
                 parse_error = 'Please specify the tests to run.\n' \
                               'Usage: test_only test1 test2'
         elif args[1] == 'standard_tests':
-            parsed_test_names = [obj for obj in dir(standard_testing) if 'test_' in obj]
+            parsed_test_names = get_all_test_names_in_suite(standard_testing)
         elif args[1] == 'throughput_test':
             if len(args) < 3:
                 parse_error = 'Please specify the RAT or WiFi.\n' \
                               'Usage: throughput_test 2g/3g/4g/wifi'
             else:
                 if args[2] == 'all':
-                    parsed_test_names = [obj for obj in dir(throughput_testing) if 'test_' in obj]
+                    parsed_test_names = get_all_test_names_in_suite(throughput_testing)
                 else:
                     if len(args) > 3:
                         for parsed_test_type in args[2:]:
