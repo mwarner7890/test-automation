@@ -50,8 +50,11 @@ class TestRunnerGui:
         Label(self.master, text='Test Output').grid(row=4, column=0)
         Button(self.master, text='  Clear  ').grid(row=4, column=5)
         output_scrollbar = Scrollbar(self.master)
-        Text(self.master, wrap=WORD, yscrollcommand=output_scrollbar)\
-            .grid(row=6, column=0, columnspan=6)
+        output_scrollbar.grid(row=6, column=6, sticky='NS')
+        test_output_text = Text(self.master, wrap=WORD, yscrollcommand=output_scrollbar)
+        test_output_text.grid(row=6, column=0, columnspan=6)
+        test_output_text.config(yscrollcommand=output_scrollbar.set)
+        output_scrollbar.config(command=test_output_text.yview)
 
 
 root = Tk()
