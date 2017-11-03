@@ -6,8 +6,20 @@ class TestRunnerGui:
         self.master = master
         self.master.resizable(False, False)
         self.master.title('Test Runner')
-        Button(self.master, text='Test Suites').grid(row=0, column=0)
-        Button(self.master, text='Tests').grid(row=0, column=1)
+
+        test_suites_frame = Frame(self.master)
+        test_suits_list_label = Label(test_suites_frame, text='Test Suites')
+        test_suites_list = Listbox(test_suites_frame)
+        test_suits_list_label.pack()
+        test_suites_list.pack()
+        test_suites_frame.grid(row=0, column=0)
+
+        scheduled_test_suites_frame = Frame(self.master)
+        scheduled_test_suits_list_label = Label(scheduled_test_suites_frame, text='All Test Cases')
+        scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
+        scheduled_test_suits_list_label.pack()
+        scheduled_test_suites_list.pack()
+        scheduled_test_suites_frame.grid(row=0, column=1)
 
         test_select_btn_frame = Frame(self.master)
         test_select_btn_select = Button(test_select_btn_frame, text=' > ')
@@ -20,18 +32,26 @@ class TestRunnerGui:
         test_select_btn_deselect_all.pack()
         test_select_btn_frame.grid(row=0, column=2)
 
-        Button(self.master, text='Scheduled Tests').grid(row=0, column=4)
+        scheduled_test_suites_frame = Frame(self.master)
+        scheduled_test_suits_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
+        scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
+        scheduled_test_suits_list_label.pack()
+        scheduled_test_suites_list.pack()
+        scheduled_test_suites_frame.grid(row=0, column=3)
 
         test_run_stop_btn_frame = Frame(self.master)
-        test_run_btn = Button(test_run_stop_btn_frame, text='Run')
-        test_stop_btn = Button(test_run_stop_btn_frame, text='Stop')
+        test_run_btn = Button(test_run_stop_btn_frame, text='    \n  Run  \n    ')
+        test_stop_btn = Button(test_run_stop_btn_frame, text='    \n  Stop  \n    ')
         test_run_btn.pack()
         test_stop_btn.pack()
         test_run_stop_btn_frame.grid(row=0, column=5)
 
-        Button(self.master, text='Test Output').grid(row=3, column=0)
-        Button(self.master, text='Clear').grid(row=3, column=4)
-        Button(self.master, text='dawjdioawdoz\najwoidjioawjdoiaw\nawidjoiawd\najwodiawj').grid(row=4, column=0)
+        Label(self.master).grid(row=3)
+        Label(self.master, text='Test Output').grid(row=4, column=0)
+        Button(self.master, text='  Clear  ').grid(row=4, column=5)
+        output_scrollbar = Scrollbar(self.master)
+        Text(self.master, wrap=WORD, yscrollcommand=output_scrollbar)\
+            .grid(row=6, column=0, columnspan=6)
 
 
 root = Tk()
