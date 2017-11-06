@@ -31,18 +31,18 @@ class TestRunnerGui:
         all_test_suites_frame.grid(row=0, column=1)
 
         test_select_btn_frame = Frame(self.master)
-        test_select_btn_move_to_scheduled = Button(test_select_btn_frame, text=' > ',
-                                                   command=self.move_test_case_to_scheduled)
-        test_select_btn_move_all_to_scheduled = Button(test_select_btn_frame, text='>>',
-                                                       command=self.move_all_test_cases_to_scheduled)
-        test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text='<<',
-                                                         command=self.move_all_test_cases_from_scheduled)
-        test_select_btn_move_from_scheduled = Button(test_select_btn_frame, text=' < ',
-                                                     command=self.move_test_case_from_scheduled)
-        test_select_btn_move_to_scheduled.pack()
-        test_select_btn_move_all_to_scheduled.pack()
-        test_select_btn_move_all_from_scheduled.pack()
-        test_select_btn_move_from_scheduled.pack()
+        self.test_select_btn_move_to_scheduled = Button(test_select_btn_frame, text=' > ',
+                                                        command=self.move_test_case_to_scheduled)
+        self.test_select_btn_move_all_to_scheduled = Button(test_select_btn_frame, text='>>',
+                                                            command=self.move_all_test_cases_to_scheduled)
+        self.test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text='<<',
+                                                              command=self.move_all_test_cases_from_scheduled)
+        self.test_select_btn_move_from_scheduled = Button(test_select_btn_frame, text=' < ',
+                                                          command=self.move_test_case_from_scheduled)
+        self.test_select_btn_move_to_scheduled.pack()
+        self.test_select_btn_move_all_to_scheduled.pack()
+        self.test_select_btn_move_all_from_scheduled.pack()
+        self.test_select_btn_move_from_scheduled.pack()
         test_select_btn_frame.grid(row=0, column=2)
 
         scheduled_test_suites_frame = Frame(self.master)
@@ -53,12 +53,14 @@ class TestRunnerGui:
         scheduled_test_suites_frame.grid(row=0, column=3)
 
         test_run_stop_btn_frame = Frame(self.master)
-        test_run_btn = Button(test_run_stop_btn_frame, text='    \n  Run  \n    ')
-        test_stop_btn = Button(test_run_stop_btn_frame, text='    \n  Stop  \n    ')
-        test_run_btn.config(state=DISABLED)
-        test_stop_btn.config(state=DISABLED)
-        test_run_btn.pack()
-        test_stop_btn.pack()
+        self.test_run_btn = Button(test_run_stop_btn_frame, text='    \n  Run  \n    ',
+                                   command=self.run_tests)
+        self.test_stop_btn = Button(test_run_stop_btn_frame, text='    \n  Stop  \n    ',
+                                    command=self.stop_tests)
+        self.test_run_btn.config(state=DISABLED)
+        self.test_stop_btn.config(state=DISABLED)
+        self.test_run_btn.pack()
+        self.test_stop_btn.pack()
         test_run_stop_btn_frame.grid(row=0, column=5)
 
         Label(self.master).grid(row=3)
@@ -112,21 +114,45 @@ class TestRunnerGui:
         self.scheduled_test_suites_list.insert(index, test_name)
         if self.scheduled_test_suites_list.get(0):
             self.test_suites_list.config(state=DISABLED)
+            self.test_run_btn.config(state=NORMAL)
         else:
             self.test_suites_list.config(state=NORMAL)
+            self.test_run_btn.config(state=DISABLED)
 
     def _delete_from_scheduled_test_list(self, index):
         self.scheduled_test_suites_list.delete(index)
         if self.scheduled_test_suites_list.get(0):
             self.test_suites_list.config(state=DISABLED)
+            self.test_run_btn.config(state=NORMAL)
         else:
             self.test_suites_list.config(state=NORMAL)
+            self.test_run_btn.config(state=DISABLED)
 
     def _get_selected_test_case_from_all_test_cases(self):
         return self.all_test_suite_cases_list.get(self.all_test_suite_cases_list.curselection())
 
     def _get_selected_test_case_from_scheduled_tests(self):
         return self.scheduled_test_suites_list.get(self.scheduled_test_suites_list.curselection())
+
+    def run_tests(self):
+        print('Running tests')
+        self.test_run_btn.config(state=DISABLED)
+        self.test_stop_btn.config(state=NORMAL)
+
+        self.test_select_btn_move_to_scheduled.config(state=DISABLED)
+        self.test_select_btn_move_all_to_scheduled.config(state=DISABLED)
+        self.test_select_btn_move_all_from_scheduled.config(state=DISABLED)
+        self.test_select_btn_move_from_scheduled.config(state=DISABLED)
+
+    def stop_tests(self):
+        print('Stopping tests')
+        self.test_run_btn.config(state=NORMAL)
+        self.test_stop_btn.config(state=DISABLED)
+
+        self.test_select_btn_move_to_scheduled.config(state=NORMAL)
+        self.test_select_btn_move_all_to_scheduled.config(state=NORMAL)
+        self.test_select_btn_move_all_from_scheduled.config(state=NORMAL)
+        self.test_select_btn_move_from_scheduled.config(state=NORMAL)
 
 
 root = Tk()
