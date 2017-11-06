@@ -34,12 +34,13 @@ class TestRunnerGui:
         test_select_btn_move_to_scheduled = Button(test_select_btn_frame, text=' > ',
                                                    command=self.move_test_case_to_scheduled)
         test_select_btn_move_all_to_scheduled = Button(test_select_btn_frame, text='>>')
-        test_select_btn_move_from_scheduled = Button(test_select_btn_frame, text='<<')
-        test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text=' < ')
+        test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text='<<')
+        test_select_btn_move_from_scheduled = Button(test_select_btn_frame, text=' < ',
+                                                     command=self.move_test_case_from_scheduled)
         test_select_btn_move_to_scheduled.pack()
         test_select_btn_move_all_to_scheduled.pack()
-        test_select_btn_move_from_scheduled.pack()
         test_select_btn_move_all_from_scheduled.pack()
+        test_select_btn_move_from_scheduled.pack()
         test_select_btn_frame.grid(row=0, column=2)
 
         scheduled_test_suites_frame = Frame(self.master)
@@ -80,12 +81,24 @@ class TestRunnerGui:
                 self.all_test_suite_cases_list.insert(END, test_name)
 
     def move_test_case_to_scheduled(self):
-        selected_test_case = self._get_selected_test_case()
-        self.scheduled_test_suites_list.insert(END, selected_test_case)
-        self.all_test_suite_cases_list.delete(self.all_test_suite_cases_list.curselection())
+        curselection = self.all_test_suite_cases_list.curselection()
+        if curselection:
+            selected_test_case = self._get_selected_test_case_from_all_test_cases()
+            self.scheduled_test_suites_list.insert(END, selected_test_case)
+            self.all_test_suite_cases_list.delete(curselection)
 
-    def _get_selected_test_case(self):
+    def move_test_case_from_scheduled(self):
+        curselection = self.scheduled_test_suites_list.curselection()
+        if curselection:
+            selected_test_case = self._get_selected_test_case_from_scheduled_tests()
+            self.all_test_suite_cases_list.insert(END, selected_test_case)
+            self.scheduled_test_suites_list.delete(curselection)
+
+    def _get_selected_test_case_from_all_test_cases(self):
         return self.all_test_suite_cases_list.get(self.all_test_suite_cases_list.curselection())
+
+    def _get_selected_test_case_from_scheduled_tests(self):
+        return self.scheduled_test_suites_list.get(self.scheduled_test_suites_list.curselection())
 
 
 root = Tk()
