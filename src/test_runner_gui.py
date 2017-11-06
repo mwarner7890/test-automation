@@ -86,27 +86,41 @@ class TestRunnerGui:
         curselection = self.all_test_suite_cases_list.curselection()
         if curselection:
             selected_test_case = self._get_selected_test_case_from_all_test_cases()
-            self.scheduled_test_suites_list.insert(END, selected_test_case)
+            self._insert_into_scheduled_test_list(END, selected_test_case)
             self.all_test_suite_cases_list.delete(curselection)
 
     def move_all_test_cases_to_scheduled(self):
         while self.all_test_suite_cases_list.get(0):
             test_case_name = self.all_test_suite_cases_list.get(0)
-            self.scheduled_test_suites_list.insert(END, test_case_name)
+            self._insert_into_scheduled_test_list(END, test_case_name)
             self.all_test_suite_cases_list.delete(0)
 
     def move_all_test_cases_from_scheduled(self):
         while self.scheduled_test_suites_list.get(0):
             test_case_name = self.scheduled_test_suites_list.get(0)
             self.all_test_suite_cases_list.insert(END, test_case_name)
-            self.scheduled_test_suites_list.delete(0)
+            self._delete_from_scheduled_test_list(0)
 
     def move_test_case_from_scheduled(self):
         curselection = self.scheduled_test_suites_list.curselection()
         if curselection:
             selected_test_case = self._get_selected_test_case_from_scheduled_tests()
             self.all_test_suite_cases_list.insert(END, selected_test_case)
-            self.scheduled_test_suites_list.delete(curselection)
+            self._delete_from_scheduled_test_list(0)
+
+    def _insert_into_scheduled_test_list(self, index, test_name):
+        self.scheduled_test_suites_list.insert(index, test_name)
+        if self.scheduled_test_suites_list.get(0):
+            self.test_suites_list.config(state=DISABLED)
+        else:
+            self.test_suites_list.config(state=NORMAL)
+
+    def _delete_from_scheduled_test_list(self, index):
+        self.scheduled_test_suites_list.delete(index)
+        if self.scheduled_test_suites_list.get(0):
+            self.test_suites_list.config(state=DISABLED)
+        else:
+            self.test_suites_list.config(state=NORMAL)
 
     def _get_selected_test_case_from_all_test_cases(self):
         return self.all_test_suite_cases_list.get(self.all_test_suite_cases_list.curselection())
