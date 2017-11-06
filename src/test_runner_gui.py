@@ -33,8 +33,10 @@ class TestRunnerGui:
         test_select_btn_frame = Frame(self.master)
         test_select_btn_move_to_scheduled = Button(test_select_btn_frame, text=' > ',
                                                    command=self.move_test_case_to_scheduled)
-        test_select_btn_move_all_to_scheduled = Button(test_select_btn_frame, text='>>')
-        test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text='<<')
+        test_select_btn_move_all_to_scheduled = Button(test_select_btn_frame, text='>>',
+                                                       command=self.move_all_test_cases_to_scheduled)
+        test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text='<<',
+                                                         command=self.move_all_test_cases_from_scheduled)
         test_select_btn_move_from_scheduled = Button(test_select_btn_frame, text=' < ',
                                                      command=self.move_test_case_from_scheduled)
         test_select_btn_move_to_scheduled.pack()
@@ -86,6 +88,18 @@ class TestRunnerGui:
             selected_test_case = self._get_selected_test_case_from_all_test_cases()
             self.scheduled_test_suites_list.insert(END, selected_test_case)
             self.all_test_suite_cases_list.delete(curselection)
+
+    def move_all_test_cases_to_scheduled(self):
+        while self.all_test_suite_cases_list.get(0):
+            test_case_name = self.all_test_suite_cases_list.get(0)
+            self.scheduled_test_suites_list.insert(END, test_case_name)
+            self.all_test_suite_cases_list.delete(0)
+
+    def move_all_test_cases_from_scheduled(self):
+        while self.scheduled_test_suites_list.get(0):
+            test_case_name = self.scheduled_test_suites_list.get(0)
+            self.all_test_suite_cases_list.insert(END, test_case_name)
+            self.scheduled_test_suites_list.delete(0)
 
     def move_test_case_from_scheduled(self):
         curselection = self.scheduled_test_suites_list.curselection()
