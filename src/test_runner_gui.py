@@ -69,13 +69,14 @@ class TestRunnerGui:
         output_scrollbar.config(command=test_output_text.yview)
 
     def update_test_case_list(self, event):
-        widget = event.widget
-        selected_test_suite = self.test_suites_list.get(widget.curselection())
-        test_suite_module_name = self.test_suite_module_name_dict.get(selected_test_suite)
-        test_suite_module = __import__(test_suite_module_name)
-        self.all_test_suites_list.delete(0, END)
-        for test_name in test_runner.get_all_test_names_in_suite(test_suite_module):
-            self.all_test_suites_list.insert(END, test_name)
+        curselection = event.widget.curselection()
+        if curselection:
+            selected_test_suite = self.test_suites_list.get(curselection)
+            test_suite_module_name = self.test_suite_module_name_dict.get(selected_test_suite)
+            test_suite_module = __import__(test_suite_module_name)
+            self.all_test_suites_list.delete(0, END)
+            for test_name in test_runner.get_all_test_names_in_suite(test_suite_module):
+                self.all_test_suites_list.insert(END, test_name)
 
 
 root = Tk()
