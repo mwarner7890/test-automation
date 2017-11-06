@@ -25,27 +25,28 @@ class TestRunnerGui:
 
         all_test_suites_frame = Frame(self.master)
         all_test_suites_list_label = Label(all_test_suites_frame, text='All Test Cases')
-        self.all_test_suites_list = Listbox(all_test_suites_frame)
+        self.all_test_suite_cases_list = Listbox(all_test_suites_frame)
         all_test_suites_list_label.pack()
-        self.all_test_suites_list.pack()
+        self.all_test_suite_cases_list.pack()
         all_test_suites_frame.grid(row=0, column=1)
 
         test_select_btn_frame = Frame(self.master)
-        test_select_btn_select = Button(test_select_btn_frame, text=' > ')
-        test_select_btn_select_all = Button(test_select_btn_frame, text='>>')
-        test_select_btn_deselect = Button(test_select_btn_frame, text='<<')
-        test_select_btn_deselect_all = Button(test_select_btn_frame, text=' < ')
-        test_select_btn_select.pack()
-        test_select_btn_select_all.pack()
-        test_select_btn_deselect.pack()
-        test_select_btn_deselect_all.pack()
+        test_select_btn_move_to_scheduled = Button(test_select_btn_frame, text=' > ',
+                                                   command=self.move_test_case_to_scheduled)
+        test_select_btn_move_all_to_scheduled = Button(test_select_btn_frame, text='>>')
+        test_select_btn_move_from_scheduled = Button(test_select_btn_frame, text='<<')
+        test_select_btn_move_all_from_scheduled = Button(test_select_btn_frame, text=' < ')
+        test_select_btn_move_to_scheduled.pack()
+        test_select_btn_move_all_to_scheduled.pack()
+        test_select_btn_move_from_scheduled.pack()
+        test_select_btn_move_all_from_scheduled.pack()
         test_select_btn_frame.grid(row=0, column=2)
 
         scheduled_test_suites_frame = Frame(self.master)
         scheduled_test_suites_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
-        scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
+        self.scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
         scheduled_test_suites_list_label.pack()
-        scheduled_test_suites_list.pack()
+        self.scheduled_test_suites_list.pack()
         scheduled_test_suites_frame.grid(row=0, column=3)
 
         test_run_stop_btn_frame = Frame(self.master)
@@ -74,9 +75,17 @@ class TestRunnerGui:
             selected_test_suite = self.test_suites_list.get(curselection)
             test_suite_module_name = self.test_suite_module_name_dict.get(selected_test_suite)
             test_suite_module = __import__(test_suite_module_name)
-            self.all_test_suites_list.delete(0, END)
+            self.all_test_suite_cases_list.delete(0, END)
             for test_name in test_runner.get_all_test_names_in_suite(test_suite_module):
-                self.all_test_suites_list.insert(END, test_name)
+                self.all_test_suite_cases_list.insert(END, test_name)
+
+    def move_test_case_to_scheduled(self):
+        selected_test_case = self._get_selected_test_case()
+        self.scheduled_test_suites_list.insert(END, selected_test_case)
+        self.all_test_suite_cases_list.delete(self.all_test_suite_cases_list.curselection())
+
+    def _get_selected_test_case(self):
+        return self.all_test_suite_cases_list.get(self.all_test_suite_cases_list.curselection())
 
 
 root = Tk()
