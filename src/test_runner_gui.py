@@ -13,23 +13,46 @@ class TestRunnerGui:
             'Standard tests': 'standard_testing'
         }
 
-        test_suites_frame = Frame(self.master)
-        test_suites_list_label = Label(test_suites_frame, text='Test Suites')
-        self.test_suites_list = Listbox(test_suites_frame)
-        test_suites_list_label.pack()
-        self.test_suites_list.pack()
-        test_suites_frame.grid(row=0, column=0)
-        for test_suite_name in self.test_suite_module_name_dict:
-            self.test_suites_list.insert(END, test_suite_name)
-        self.test_suites_list.bind('<<ListboxSelect>>', self.update_test_case_list)
+        self._create_test_suites_listbox()
+        self._create_all_test_suite_cases_listbox()
+        self._create_test_selection_buttons()
+        self._create_scheduled_tests_listbox()
+        self._create_test_control_buttons()
+        self._create_test_output_area()
 
-        all_test_suites_frame = Frame(self.master)
-        all_test_suites_list_label = Label(all_test_suites_frame, text='All Test Cases')
-        self.all_test_suite_cases_list = Listbox(all_test_suites_frame)
-        all_test_suites_list_label.pack()
-        self.all_test_suite_cases_list.pack()
-        all_test_suites_frame.grid(row=0, column=1)
+    def _create_test_output_area(self):
+        Label(self.master).grid(row=3)
+        Label(self.master, text='Test Output').grid(row=4, column=0)
+        Button(self.master, text='  Clear  ').grid(row=4, column=5)
+        output_scrollbar = Scrollbar(self.master)
+        output_scrollbar.grid(row=6, column=6, sticky='NS')
+        test_output_text = Text(self.master, wrap=WORD, yscrollcommand=output_scrollbar)
+        test_output_text.grid(row=6, column=0, columnspan=6)
+        test_output_text.config(yscrollcommand=output_scrollbar.set,
+                                state=DISABLED)
+        output_scrollbar.config(command=test_output_text.yview)
 
+    def _create_test_control_buttons(self):
+        test_run_stop_btn_frame = Frame(self.master)
+        self.test_run_btn = Button(test_run_stop_btn_frame, text='    \n  Run  \n    ',
+                                   command=self.run_tests)
+        self.test_stop_btn = Button(test_run_stop_btn_frame, text='    \n  Stop  \n    ',
+                                    command=self.stop_tests)
+        self.test_run_btn.config(state=DISABLED)
+        self.test_stop_btn.config(state=DISABLED)
+        self.test_run_btn.pack()
+        self.test_stop_btn.pack()
+        test_run_stop_btn_frame.grid(row=0, column=5)
+
+    def _create_scheduled_tests_listbox(self):
+        scheduled_test_suites_frame = Frame(self.master)
+        scheduled_test_suites_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
+        self.scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
+        scheduled_test_suites_list_label.pack()
+        self.scheduled_test_suites_list.pack()
+        scheduled_test_suites_frame.grid(row=0, column=3)
+
+    def _create_test_selection_buttons(self):
         test_select_btn_frame = Frame(self.master)
         self.test_select_btn_move_to_scheduled = Button(test_select_btn_frame, text=' > ',
                                                         command=self.move_test_case_to_scheduled)
@@ -45,34 +68,24 @@ class TestRunnerGui:
         self.test_select_btn_move_from_scheduled.pack()
         test_select_btn_frame.grid(row=0, column=2)
 
-        scheduled_test_suites_frame = Frame(self.master)
-        scheduled_test_suites_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
-        self.scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
-        scheduled_test_suites_list_label.pack()
-        self.scheduled_test_suites_list.pack()
-        scheduled_test_suites_frame.grid(row=0, column=3)
+    def _create_all_test_suite_cases_listbox(self):
+        all_test_suite_cases_frame = Frame(self.master)
+        all_test_suite_cases_list_label = Label(all_test_suite_cases_frame, text='All Test Cases')
+        self.all_test_suite_cases_list = Listbox(all_test_suite_cases_frame)
+        all_test_suite_cases_list_label.pack()
+        self.all_test_suite_cases_list.pack()
+        all_test_suite_cases_frame.grid(row=0, column=1)
 
-        test_run_stop_btn_frame = Frame(self.master)
-        self.test_run_btn = Button(test_run_stop_btn_frame, text='    \n  Run  \n    ',
-                                   command=self.run_tests)
-        self.test_stop_btn = Button(test_run_stop_btn_frame, text='    \n  Stop  \n    ',
-                                    command=self.stop_tests)
-        self.test_run_btn.config(state=DISABLED)
-        self.test_stop_btn.config(state=DISABLED)
-        self.test_run_btn.pack()
-        self.test_stop_btn.pack()
-        test_run_stop_btn_frame.grid(row=0, column=5)
-
-        Label(self.master).grid(row=3)
-        Label(self.master, text='Test Output').grid(row=4, column=0)
-        Button(self.master, text='  Clear  ').grid(row=4, column=5)
-        output_scrollbar = Scrollbar(self.master)
-        output_scrollbar.grid(row=6, column=6, sticky='NS')
-        test_output_text = Text(self.master, wrap=WORD, yscrollcommand=output_scrollbar)
-        test_output_text.grid(row=6, column=0, columnspan=6)
-        test_output_text.config(yscrollcommand=output_scrollbar.set,
-                                state=DISABLED)
-        output_scrollbar.config(command=test_output_text.yview)
+    def _create_test_suites_listbox(self):
+        test_suites_frame = Frame(self.master)
+        test_suites_list_label = Label(test_suites_frame, text='Test Suites')
+        self.test_suites_list = Listbox(test_suites_frame)
+        test_suites_list_label.pack()
+        self.test_suites_list.pack()
+        test_suites_frame.grid(row=0, column=0)
+        for test_suite_name in self.test_suite_module_name_dict:
+            self.test_suites_list.insert(END, test_suite_name)
+        self.test_suites_list.bind('<<ListboxSelect>>', self.update_test_case_list)
 
     def update_test_case_list(self, event):
         curselection = event.widget.curselection()
@@ -139,20 +152,26 @@ class TestRunnerGui:
         self.test_run_btn.config(state=DISABLED)
         self.test_stop_btn.config(state=NORMAL)
 
-        self.test_select_btn_move_to_scheduled.config(state=DISABLED)
-        self.test_select_btn_move_all_to_scheduled.config(state=DISABLED)
-        self.test_select_btn_move_all_from_scheduled.config(state=DISABLED)
-        self.test_select_btn_move_from_scheduled.config(state=DISABLED)
+        self._disable_test_select_buttons()
 
     def stop_tests(self):
         print('Stopping tests')
         self.test_run_btn.config(state=NORMAL)
         self.test_stop_btn.config(state=DISABLED)
 
-        self.test_select_btn_move_to_scheduled.config(state=NORMAL)
-        self.test_select_btn_move_all_to_scheduled.config(state=NORMAL)
-        self.test_select_btn_move_all_from_scheduled.config(state=NORMAL)
-        self.test_select_btn_move_from_scheduled.config(state=NORMAL)
+        self._enable_test_select_buttons()
+
+    def _disable_test_select_buttons(self):
+        self._set_test_select_buttons_state(DISABLED)
+
+    def _enable_test_select_buttons(self):
+        self._set_test_select_buttons_state(NORMAL)
+
+    def _set_test_select_buttons_state(self, state):
+        self.test_select_btn_move_to_scheduled.config(state=state)
+        self.test_select_btn_move_all_to_scheduled.config(state=state)
+        self.test_select_btn_move_all_from_scheduled.config(state=state)
+        self.test_select_btn_move_from_scheduled.config(state=state)
 
 
 root = Tk()
