@@ -24,9 +24,9 @@ class TestRunnerGui:
         self.test_suites_list.bind('<<ListboxSelect>>', self.update_test_case_list)
 
         all_test_suites_frame = Frame(self.master)
-        all_test_suits_list_label = Label(all_test_suites_frame, text='All Test Cases')
+        all_test_suites_list_label = Label(all_test_suites_frame, text='All Test Cases')
         self.all_test_suites_list = Listbox(all_test_suites_frame)
-        all_test_suits_list_label.pack()
+        all_test_suites_list_label.pack()
         self.all_test_suites_list.pack()
         all_test_suites_frame.grid(row=0, column=1)
 
@@ -42,9 +42,9 @@ class TestRunnerGui:
         test_select_btn_frame.grid(row=0, column=2)
 
         scheduled_test_suites_frame = Frame(self.master)
-        scheduled_test_suits_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
+        scheduled_test_suites_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
         scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
-        scheduled_test_suits_list_label.pack()
+        scheduled_test_suites_list_label.pack()
         scheduled_test_suites_list.pack()
         scheduled_test_suites_frame.grid(row=0, column=3)
 
