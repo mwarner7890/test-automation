@@ -20,6 +20,9 @@ class TestRunnerGui:
         self._create_test_control_buttons()
         self._create_test_output_area()
 
+        self.scheduled_test_suite = ''
+        self.scheduled_test_cases = []
+
     def _create_test_output_area(self):
         Label(self.master).grid(row=3)
         Label(self.master, text='Test Output').grid(row=4, column=0)
@@ -47,9 +50,9 @@ class TestRunnerGui:
     def _create_scheduled_tests_listbox(self):
         scheduled_test_suites_frame = Frame(self.master)
         scheduled_test_suites_list_label = Label(scheduled_test_suites_frame, text='Scheduled Test Cases')
-        self.scheduled_test_suites_list = Listbox(scheduled_test_suites_frame)
+        self.scheduled_test_suites_listbox = Listbox(scheduled_test_suites_frame)
         scheduled_test_suites_list_label.pack()
-        self.scheduled_test_suites_list.pack()
+        self.scheduled_test_suites_listbox.pack()
         scheduled_test_suites_frame.grid(row=0, column=3)
 
     def _create_test_selection_buttons(self):
@@ -111,30 +114,33 @@ class TestRunnerGui:
             self.all_test_suite_cases_list.delete(0)
 
     def move_all_test_cases_from_scheduled(self):
-        while self.scheduled_test_suites_list.get(0):
-            test_case_name = self.scheduled_test_suites_list.get(0)
+        while self.scheduled_test_suites_listbox.get(0):
+            test_case_name = self.scheduled_test_suites_listbox.get(0)
             self.all_test_suite_cases_list.insert(END, test_case_name)
-            self._delete_from_scheduled_test_list(0)
+            self._delete_from_scheduled_test_list(0, test_case_name)
 
     def move_test_case_from_scheduled(self):
-        curselection = self.scheduled_test_suites_list.curselection()
+        curselection = self.scheduled_test_suites_listbox.curselection()
+        test_case_name = self.scheduled_test_suites_listbox.get(0)
         if curselection:
             selected_test_case = self._get_selected_test_case_from_scheduled_tests()
             self.all_test_suite_cases_list.insert(END, selected_test_case)
-            self._delete_from_scheduled_test_list(0)
+            self._delete_from_scheduled_test_list(0, test_case_name)
 
     def _insert_into_scheduled_test_list(self, index, test_name):
-        self.scheduled_test_suites_list.insert(index, test_name)
-        if self.scheduled_test_suites_list.get(0):
+        self.scheduled_test_suites_listbox.insert(index, test_name)
+        self.scheduled_test_cases.append(test_name)
+        if self.scheduled_test_suites_listbox.get(0):
             self.test_suites_list.config(state=DISABLED)
             self.test_run_btn.config(state=NORMAL)
         else:
             self.test_suites_list.config(state=NORMAL)
             self.test_run_btn.config(state=DISABLED)
 
-    def _delete_from_scheduled_test_list(self, index):
-        self.scheduled_test_suites_list.delete(index)
-        if self.scheduled_test_suites_list.get(0):
+    def _delete_from_scheduled_test_list(self, index, test_case_name):
+        self.scheduled_test_suites_listbox.delete(index)
+        self.scheduled_test_cases.remove(test_case_name)
+        if self.scheduled_test_suites_listbox.get(0):
             self.test_suites_list.config(state=DISABLED)
             self.test_run_btn.config(state=NORMAL)
         else:
@@ -145,10 +151,12 @@ class TestRunnerGui:
         return self.all_test_suite_cases_list.get(self.all_test_suite_cases_list.curselection())
 
     def _get_selected_test_case_from_scheduled_tests(self):
-        return self.scheduled_test_suites_list.get(self.scheduled_test_suites_list.curselection())
+        return self.scheduled_test_suites_listbox.get(self.scheduled_test_suites_listbox.curselection())
 
     def run_tests(self):
         print('Running tests')
+        print(self.scheduled_test_suite)
+        print(self.scheduled_test_cases)
         self.test_run_btn.config(state=DISABLED)
         self.test_stop_btn.config(state=NORMAL)
 
