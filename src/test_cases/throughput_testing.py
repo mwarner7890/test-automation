@@ -8,10 +8,12 @@ def _toggle_usb_tethering(adb):
     adb.launch_activity_component('com.android.settings/.TetherSettings')
     key_event_tmp = ['KEYCODE_DPAD_UP',
                      'KEYCODE_DPAD_UP',
+                     'KEYCODE_DPAD_UP',
                      'KEYCODE_DPAD_UP']
 
-    if adb.model_name not in ['S30', 'S40']:
+    if adb.model_name not in ['S30', 'S40', 'AP01']:
         key_event_tmp.append('KEYCODE_DPAD_DOWN')
+    print(adb.model_name)
     key_event_tmp.append('KEYCODE_ENTER')
     adb.input_key_event_sequence(key_event_tmp)
     time.sleep(5)
