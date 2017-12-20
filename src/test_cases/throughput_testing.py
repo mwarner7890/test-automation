@@ -12,6 +12,7 @@ def _toggle_usb_tethering(adb):
                      'KEYCODE_DPAD_UP']
 
     if adb.model_name not in ['S30', 'S40', 'AP01', 'Explore']:
+        print(adb.mode)
         key_event_tmp.append('KEYCODE_DPAD_DOWN')
     print(adb.model_name)
     key_event_tmp.append('KEYCODE_ENTER')
