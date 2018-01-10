@@ -11,9 +11,8 @@ def _toggle_usb_tethering(adb):
                      'KEYCODE_DPAD_UP',
                      'KEYCODE_DPAD_UP']
 
-    if adb.model_name not in ['S30', 'S40', 'AP01', 'Explore']:
+    if adb.model_name not in ['S30', 'S40', 'AP01', 'Land Rover Explore']:
         key_event_tmp.append('KEYCODE_DPAD_DOWN')
-    print(adb.model_name)
     key_event_tmp.append('KEYCODE_ENTER')
     adb.input_key_event_sequence(key_event_tmp)
     time.sleep(5)
@@ -53,8 +52,8 @@ def _get_menu_entry_count_for_rat(rat):
 def _toggle_wifi(adb):
     adb.launch_activity_action('android.settings.WIFI_SETTINGS')
 
-    if adb.model_name == 'S30' or adb.model_name == 'S40':
-        adb.input_tap(x=470, y=130)
+    if adb.model_name in ['S30', 'S40', 'Ektra']:
+        adb.input_tap(x='90%', y='18%')
     else:
         adb.input_key_event_sequence(['KEYCODE_DPAD_DOWN',
                                      'KEYCODE_ENTER'])
