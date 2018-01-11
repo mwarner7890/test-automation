@@ -62,7 +62,7 @@ def _toggle_wifi(adb):
 
 def _time_download(adb, download_filename):
     _toggle_usb_tethering(adb)
-    time.sleep(8)
+    time.sleep(18)
     adb.lock_screen()
     while True:
         try:
